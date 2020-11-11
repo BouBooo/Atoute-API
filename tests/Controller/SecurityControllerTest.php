@@ -4,18 +4,17 @@ namespace App\Tests\Controller;
 
 use App\Controller\BaseController;
 use App\Tests\ApiTestCase;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SecurityControllerTest extends ApiTestCase
 {
-    use FixturesTrait;
+    private const PASSWORD = "password";
 
     public function testParticularRegister(): void
     {
         $response = $this->jsonRequest('POST', '/auth/register', [
             'email' => 'test@test.com',
-            'password' => 'password',
+            'password' => self::PASSWORD,
             'role' => 'particular',
             'firstName' => 'Particular',
             'lastName' => 'Part'
@@ -29,7 +28,7 @@ class SecurityControllerTest extends ApiTestCase
     {
         $response = $this->jsonRequest('POST', '/auth/register', [
             'email' => 'test1@test.com',
-            'password' => 'password',
+            'password' => self::PASSWORD,
             'role' => 'particular',
             'companyName' => 'The company'
         ]);
@@ -60,14 +59,21 @@ class SecurityControllerTest extends ApiTestCase
         $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'user_not_verified');
     }
 
-//    public function testUserLoginWithGoodCredentials(): void
-//    {
-//        $response = $this->jsonRequest('POST', '/auth/login', [
-//            'email' => 'test@test.com',
-//            'password' => 'password',
-//        ]);
-//
-//        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-//        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'logged_successfully');
-//    }
+    public function testUserLoginWithGoodCredentials(): void
+    {
+        ['particular1' => $user] = $this->loadFixtureFiles([
+            self::DIR_FIXTURES . 'Particular.yaml'
+        ]);
+
+        $response = $this->jsonRequest('POST', '/auth/login', [
+            'email' => $user->getEmail(),
+            'password' => self::PASSWORD,
+        ]);
+
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'logged_successfully', [
+            'accessToken' => $user->getAccessToken(),
+            'refreshToken' => $user->getRefreshToken()
+        ]);
+    }
 }

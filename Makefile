@@ -37,6 +37,6 @@ seed: vendor/autoload.php ## Génère des données dans la base de données (doc
 	$(sy) doctrine:schema:update -f
 	$(sy) doctrine:fixtures:load -n
 
-.PHONY: clear ## Vide le cache
-clear: vendor/autoload.php
+.PHONY: cc
+cc: vendor/autoload.php ## Vide le cache
 	$(sy) cache:clear

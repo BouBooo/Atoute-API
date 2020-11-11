@@ -2,14 +2,17 @@
 
 namespace App\Tests;
 
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
 {
-    protected KernelBrowser $client;
-    protected const ACCESS_TOKEN = 'a54w4de4s51f484v5c1qc';
+    use FixturesTrait;
+
     protected const DIR_FIXTURES = './tests/Fixtures/';
+
+    protected KernelBrowser $client;
 
     protected function setUp(): void
     {
@@ -21,15 +24,15 @@ class ApiTestCase extends WebTestCase
         $headers = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'X-ATOUTE-AUTH-TOKEN' => $token
+            'HTTP_X_ATOUTE_AUTH_TOKEN' => $token
         ];
 
-        $request = $this->client->request($method, $url, [], [], $headers, $data ? json_encode($data) : null);
+        $this->client->request($method, $url, [], [], $headers, $data ? json_encode($data) : null);
 
         return $this->client->getResponse()->getContent();
     }
 
-    public function assertJsonEqualsToJson(string $response, string $status, string $message, array $data = [])
+    public function assertJsonEqualsToJson(string $response, string $status, string $message, array $data = []): void
     {
         $json = [
             'status' => $status,

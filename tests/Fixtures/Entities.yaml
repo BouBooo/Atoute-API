@@ -4,6 +4,7 @@ App\Entity\Company:
         password: \$argon2id\$v=19\$m=65536,t=4,p=1\$QPSsWoeFqm3FhbOO7MwGVA\$EfbAVFy4vf1efG9dmVLyY3cKyuCY9BL9vtX3MUAbaqE
         access_token: a54w4de4s51f484v5c1qc<current()>
         refresh_token: r69cvb8c84v8r1212rd1<current()>
+        expiration_date: <date_create("+3 day")>
         is_verified: true
 
 App\Entity\Offer:
