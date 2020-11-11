@@ -1,0 +1,14 @@
+App\Entity\Company:
+    company{1..10}:
+        email: company<current()>\@domain.com
+        password: \$argon2id\$v=19\$m=65536,t=4,p=1\$QPSsWoeFqm3FhbOO7MwGVA\$EfbAVFy4vf1efG9dmVLyY3cKyuCY9BL9vtX3MUAbaqE
+        access_token: a54w4de4s51f484v5c1qc<current()>
+        refresh_token: r69cvb8c84v8r1212rd1<current()>
+        is_verified: true
+
+App\Entity\Offer:
+    offer{1..10}:
+        title: 'offerTitle<current()>'
+        description: '<paragraph(4)>'
+        city: '<city()>'
+        owner: '@company<numberBetween(1,10)>'
