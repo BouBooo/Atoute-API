@@ -1,0 +1,44 @@
+parameters:
+    uploadsRelativeDir: 'uploads/'
+    uploadsAbsoluteDir: '%kernel.project_dir%/public/%uploadsRelativeDir%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind: # Retrieve these parameters throughout the project
+            $uploadsAbsoluteDir: '%uploadsAbsoluteDir%'
+            $uploadsRelativeDir: '%uploadsRelativeDir%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Security\ApiAuthenticator:
+        arguments:
+            $headerAuthToken: '%env(HEADER_AUTH_TOKEN)%'
+
+    App\EventListener\EntityListener:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+
+    App\EventListener\LogoutListener:
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
+              dispatcher: security.event_dispatcher.web
+
+    App\Service\MailerService:
+        arguments:
+            $from: '%env(MAILER_FROM)%'

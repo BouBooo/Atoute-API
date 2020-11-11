@@ -1,0 +1,19 @@
+parameters:
+    inferPrivatePropertyTypeFromConstructor: true
+    excludes_analyse:
+        - %rootDir%/../../../migrations/*
+    symfony:
+        container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+    ignoreErrors:
+        - '#Call to an undefined method Symfony\\Component\\Serializer\\SerializerInterface::denormalize\(\)#'
+        - '#Call to an undefined method object::.+#'
+        - '#Parameter \#1 \$owner of method App\\Entity\\Offer::setOwner\(\) expects App\\Entity\\Company, App\\Entity\\User given#'
+        - '#Parameter \#1 \$candidate of method App\\Entity\\Application::setCandidate\(\) expects App\\Entity\\Particular, App\\Entity\\User\|null given#'
+        - '#Call to an undefined method App\\Entity\\User::.+#'
+    doctrine:
+        objectManagerLoader: config/object-manager.php
+
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon

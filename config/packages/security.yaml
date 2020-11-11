@@ -1,0 +1,44 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+
+    role_hierarchy:
+        ROLE_COMPANY: [ROLE_USER]
+        ROLE_PARTICULAR: [ROLE_USER]
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        web:
+            pattern: ^/(auth|reset-password)
+            anonymous: true
+            lazy: true
+            provider: app_user_provider
+            guard:
+                authenticators:
+                    - App\Security\WebAuthenticator
+            user_checker: App\Security\UserChecker
+            logout:
+                path: app_logout
+        api:
+            pattern: ^/
+            guard:
+                authenticators:
+                    - App\Security\ApiAuthenticator
+        main:
+            anonymous: true
+
+    access_control:
+        - { path: ^/auth/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }

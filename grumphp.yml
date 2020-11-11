@@ -1,0 +1,16 @@
+grumphp:
+    hooks_dir: git_hooks
+    tasks:
+#        phpcsfixer:  # Extension to autofix and auto git add files
+#            using_cache: true
+#            cache_file: ./.php_cs.cache
+#            config: ./.php_cs
+#            metadata:
+#                priority: 100 # Always first
+        yamllint: ~
+        phpstan:
+            level: 5
+            configuration: './phpstan.neon'
+            triggered_by: ['php']
+        phpmd:
+            ruleset: ['controversial']
