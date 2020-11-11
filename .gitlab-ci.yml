@@ -25,6 +25,7 @@ test:
     - composer install
   script:
     - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
+    - php bin/phpunit
 
 build:
   type: build
