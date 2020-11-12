@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Company;
 use App\Entity\Resume;
 use App\Form\ResumeType;
 use App\Uploader\Uploader;
@@ -47,9 +48,15 @@ final class ResumeController extends BaseController
      */
     public function create(Request $request): JsonResponse
     {
-        $data = $this->testJson($request);
+        $data = $request->request->all();
 
-        $form = $this->formFactory->create(ResumeType::class);
+        if ($this->authService->getUser() instanceof Company) {
+            return $this->respondWithError('company_can_create_resume');
+        }
+
+        $form = $this->formFactory->create(ResumeType::class, null, [
+            'cv' => $request->files->get('cv')
+        ]);
         $form->submit($data);
 
         if (!$form->isValid()) {
