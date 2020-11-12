@@ -8,8 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OfferControllerTest extends ApiTestCase 
 {
-    private $validationErrorResponse = 'validation_errors';
-
     public function testCompanyCanCreateOffer(): void
     {
         ['company1' => $owner] = $this->loadFixtureFiles([
@@ -48,7 +46,7 @@ class OfferControllerTest extends ApiTestCase
             'activity' => "Activity",
         ];
 
-        $response = $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
+        $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
     }
@@ -70,9 +68,10 @@ class OfferControllerTest extends ApiTestCase
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
-        $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
-
+        $response = $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
+        
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'offer_removed');
     }
 
     public function testDeleteOfferWithBadOwner(): void
@@ -83,8 +82,9 @@ class OfferControllerTest extends ApiTestCase
 
         $badToken = self::BASE_TOKEN . '9';
 
-        $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $badToken);
+        $response = $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $badToken);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
+        $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'bad_offer_owner');
     }
 }
