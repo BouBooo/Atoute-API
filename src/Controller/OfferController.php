@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Offer;
 use App\Form\OfferType;
-use App\Repository\OfferRepository;
+use App\Entity\Particular;
 use App\Service\AuthService;
+use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -45,6 +46,10 @@ final class OfferController extends BaseController
     {
         $data = $this->testJson($request);
 
+        if($this->authService->getUser() instanceof Particular) {
+            return $this->respondWithError('only_companies_can_create_offer', []);
+        }
+
         $form = $this->formFactory->create(OfferType::class);
         $form->submit($data);
 
@@ -55,6 +60,8 @@ final class OfferController extends BaseController
                 'errors' => $errors
             ]);
         }
+
+        dd($form->isValid());
 
         $offer = $form->getData();
 

@@ -29,7 +29,9 @@ class OfferType extends AbstractType
                 'mapped' => false
             ])
             ->add('city')
-            ->add('postal_code')
+            ->add('postal_code', null, [
+                'empty_data' => ''
+            ])
             ->add('salary', null, [
                 'required' => false
             ])

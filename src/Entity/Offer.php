@@ -38,7 +38,7 @@ class Offer
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="The description field should not be blank")
      * @Groups({"offer_read"})
      */
     private string $description = '';
@@ -57,14 +57,14 @@ class Offer
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="The city field should not be blank")
      * @Groups({"offer_read"})
      */
     private string $city = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="The postal_code field should not be blank")
      * @Groups({"offer_read"})
      */
     private string $postalCode = '';
