@@ -65,6 +65,7 @@ class Offer
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The postal_code field should not be blank")
+     * @Assert\Regex("/^\d{5}$/")
      * @Groups({"offer_read"})
      */
     private string $postalCode = '';

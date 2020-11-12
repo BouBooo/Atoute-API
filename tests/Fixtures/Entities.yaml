@@ -6,6 +6,7 @@ App\Entity\Company:
         refresh_token: r69cvb8c84v8r1212rd1<current()>
         expiration_date: <date_create("+3 day")>
         is_verified: true
+        companyName: "company<current()>"
 
 App\Entity\Offer:
     offer{1..10}:
@@ -24,6 +25,8 @@ App\Entity\Particular:
         refresh_token: p69cvb8c84v8r1212rd1<current()>
         expiration_date: <date_create("+3 day")>
         is_verified: true
+        firstname: <firstName()>
+        lastname: <lastName()>
     
 App\Entity\Application:
     application{1..20}:
