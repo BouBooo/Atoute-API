@@ -122,6 +122,7 @@ final class ResumeController extends BaseController
         if ($verifyOwner && !$resume->isOwner($this->authService->getUser())) {
             return 'bad_resume_owner';
         }
+
         return $resume;
     }
 }

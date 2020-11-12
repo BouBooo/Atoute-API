@@ -25,14 +25,14 @@ class Offer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The title field should not be blank")
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private string $title = '';
 

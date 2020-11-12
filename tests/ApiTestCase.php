@@ -43,4 +43,12 @@ class ApiTestCase extends WebTestCase
 
         $this->assertJsonStringEqualsJsonString($response, json_encode($json));
     }
+
+    protected function assertHasValidationErrors(object $entity, int $number = 0): void
+    {
+        self::bootKernel();
+        $errors = self::$container->get('validator')->validate($entity);
+        $this->assertCount($number, $errors);
+        self::tearDown(); // To handle multiple asserts in a row
+    }
 }

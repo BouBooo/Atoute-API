@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ApplicationRepository::class)
@@ -17,29 +18,38 @@ class Application
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"application_read"})
      */
     private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Offer::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"application_read"})
      */
     private Offer $offer;
 
     /**
      * @ORM\ManyToOne(targetEntity=Particular::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"application_read"})
      */
     private Particular $candidate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"application_read"})
      */
     private ?string $message = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function isOfferOwner(int $userId): bool
+    {
+        return $this->offer->getOwner()->getId() === $userId;
     }
 
     public function getOffer(): Offer
@@ -52,6 +62,11 @@ class Application
         $this->offer = $offer;
 
         return $this;
+    }
+
+    public function isOwner(int $userId): bool
+    {
+        return $this->candidate->getId() === $userId;
     }
 
     public function getCandidate(): Particular

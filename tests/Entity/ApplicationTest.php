@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Entity;
 
 use App\Entity\Offer;
 use App\Entity\Company;
@@ -27,17 +27,9 @@ class ApplicationTest extends ApiTestCase
             ->setCandidate($candidate);
     }
 
-    public function assertHasValidationErrors(Application $application, int $number = 0)
+    public function testValidEntity(): void
     {
-        self::bootKernel();
-        $errors = self::$container->get('validator')->validate($application);
-        $this->assertCount($number, $errors);
-        self::tearDown(); // To handle multiple asserts in a row
-    }
-
-    public function testValidEntity() 
-    {
-        $this->assertHasValidationErrors($this->buildEntity(), 0);
+        $this->assertHasValidationErrors($this->buildEntity());
     }
 
     public function testValidApplicationProperties(): void

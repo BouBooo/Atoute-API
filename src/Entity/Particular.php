@@ -21,19 +21,19 @@ class Particular extends User
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read"})
      */
     private string $firstName = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read"})
      */
     private string $lastName = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read"})
      */
     private string $civility = '';
 

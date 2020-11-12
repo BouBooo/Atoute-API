@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Entity;
 
 use App\Entity\Offer;
 use App\Entity\Company;
-use App\Entity\Particular;
 use App\Tests\ApiTestCase;
-use App\Controller\BaseController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OfferTest extends ApiTestCase
 {
@@ -21,37 +18,29 @@ class OfferTest extends ApiTestCase
         ]);
 
         return (new Offer())
-        ->setTitle('My title')
-        ->setDescription('Blablala')
-        ->setCity('Bordeaux')
-        ->setPostalCode('33100')
-        ->setOwner($company);
+            ->setTitle('My title')
+            ->setDescription('Blablala')
+            ->setCity('Bordeaux')
+            ->setPostalCode('33100')
+            ->setOwner($company);
     }
 
-    public function assertHasValidationErrors(Offer $offer, int $number = 0)
+    public function testValidEntity(): void
     {
-        self::bootKernel();
-        $errors = self::$container->get('validator')->validate($offer);
-        $this->assertCount($number, $errors);
-        self::tearDown(); // To handle multiple asserts in a row
+        $this->assertHasValidationErrors($this->buildEntity());
     }
 
-    public function testValidEntity() 
-    {
-        $this->assertHasValidationErrors($this->buildEntity(), 0);
-    }
-
-    public function testInvalidEntity() 
+    public function testInvalidEntity(): void
     {
         $this->assertHasValidationErrors($this->buildEntity()->setTitle(''), 1);
     }
 
-    public function testInvalidEntityPostalCode() 
+    public function testInvalidEntityPostalCode(): void
     {
         $this->assertHasValidationErrors($this->buildEntity()->setPostalCode('331005'), 1);
         $this->assertHasValidationErrors($this->buildEntity()->setPostalCode(''), 1);
         $this->assertHasValidationErrors($this->buildEntity()->setPostalCode('Paris'), 1);
-        $this->assertHasValidationErrors($this->buildEntity()->setPostalCode('33150'), 0);
+        $this->assertHasValidationErrors($this->buildEntity()->setPostalCode('33150'));
     }
 
     public function testValidOfferProperties(): void

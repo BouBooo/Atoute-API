@@ -9,6 +9,7 @@ use App\Repository\ApplicationRepository;
 use App\Repository\OfferRepository;
 use App\Service\AuthService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,13 +21,19 @@ class ApplicationController extends BaseController
 {
     private AuthService $authService;
     private EntityManagerInterface $manager;
+    private SerializerInterface $serializer;
     private OfferRepository $offerRepository;
     private ApplicationRepository $applicationRepository;
 
-    public function __construct(AuthService $authService, EntityManagerInterface $manager)
+    public function __construct(
+        AuthService $authService,
+        EntityManagerInterface $manager,
+        SerializerInterface $serializer
+    )
     {
         $this->authService = $authService;
         $this->manager = $manager;
+        $this->serializer = $serializer;
         $this->offerRepository = $manager->getRepository(Offer::class);
         $this->applicationRepository = $manager->getRepository(Application::class);
     }
@@ -69,12 +76,42 @@ class ApplicationController extends BaseController
     }
 
     /**
+     * @Route("/{id}", name="get", methods={"GET"})
+     */
+    public function index(int $id): JsonResponse
+    {
+        if (!$application = $this->applicationRepository->find($id)) {
+            return $this->respondWithError('application_not_found');
+        }
+
+        $user = $this->authService->getUser();
+
+        if (!$application->isOwner($user->getId()) || !$application->isOfferOwner($user->getId())) {
+            return $this->respondWithError("bad_application_access");
+        }
+
+        $json = $this->serializer->serialize(
+            $application,
+            'json',
+            ['groups' => 'application_read']
+        );
+
+        return $this->respond('application_infos', json_decode($json));
+    }
+
+    /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
      */
     public function delete(int $id): JsonResponse
     {
         if (!$application = $this->applicationRepository->find($id)) {
             return $this->respondWithError('application_not_found');
+        }
+
+        $user = $this->authService->getUser();
+
+        if ($user instanceof Company || !$application->isOwner($user->getId())) {
+            return $this->respondWithError("bad_application_owner");
         }
 
         $this->manager->remove($application);
