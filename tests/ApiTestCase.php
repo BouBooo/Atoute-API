@@ -10,6 +10,7 @@ class ApiTestCase extends WebTestCase
 {
     use FixturesTrait;
 
+    protected const BASE_TOKEN = 'a54w4de4s51f484v5c1qc';
     protected const DIR_FIXTURES = './tests/Fixtures/';
 
     protected KernelBrowser $client;

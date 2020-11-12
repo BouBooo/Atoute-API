@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OfferControllerTest extends ApiTestCase 
 {
+    private $validationErrorResponse = 'validation_errors';
+
     public function testCompanyCanCreateOffer(): void
     {
         ['company1' => $owner] = $this->loadFixtureFiles([
@@ -31,6 +33,26 @@ class OfferControllerTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
     }
 
+    public function testCreateOfferWithValidationErrors(): void
+    {
+        ['company1' => $owner] = $this->loadFixtureFiles([
+            self::DIR_FIXTURES . 'Company.yaml',
+        ]);
+
+        $offer = [
+            'title' => "",
+            'description' => 'Offer description',
+            'city' => 'Bordeaux',
+            'postal_code' => '33000',
+            'type' => 'Offer type',
+            'activity' => "Activity",
+        ];
+
+        $response = $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
+
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
+    }
+
     public function testGetOffer(): void
     {
         ['offer1' => $offer] = $this->loadFixtureFiles([
@@ -40,5 +62,29 @@ class OfferControllerTest extends ApiTestCase
         $this->jsonRequest('GET', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
+    }
+
+    public function testDeleteOffer(): void
+    {
+        ['offer1' => $offer] = $this->loadFixtureFiles([
+            self::DIR_FIXTURES . 'Entities.yaml',
+        ]);
+
+        $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
+
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
+    }
+
+    public function testDeleteOfferWithBadOwner(): void
+    {
+        ['offer1' => $offer] = $this->loadFixtureFiles([
+            self::DIR_FIXTURES . 'Entities.yaml',
+        ]);
+
+        $badToken = self::BASE_TOKEN . '9';
+
+        $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $badToken);
+
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
     }
 }
