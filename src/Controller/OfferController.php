@@ -61,8 +61,6 @@ final class OfferController extends BaseController
             ]);
         }
 
-        dd($form->isValid());
-
         $offer = $form->getData();
 
         $this->entityManager->persist($offer);
