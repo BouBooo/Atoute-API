@@ -46,8 +46,8 @@ final class OfferController extends BaseController
     {
         $data = $this->testJson($request);
 
-        if($this->authService->getUser() instanceof Particular) {
-            return $this->respondWithError('only_companies_can_create_offer', []);
+        if ($this->authService->getUser() instanceof Particular) {
+            return $this->respondWithError('only_companies_can_create_offer');
         }
 
         $form = $this->formFactory->create(OfferType::class);
