@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Resume;
 use App\Form\ResumeType;
+use App\Uploader\Uploader;
 use App\Service\AuthService;
 use App\Repository\ResumeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,19 +24,22 @@ final class ResumeController extends BaseController
     private FormFactoryInterface $formFactory;
     private ResumeRepository $resumeRepository;
     private AuthService $authService;
+    private Uploader $uploader;
 
     public function __construct(
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
         FormFactoryInterface $formFactory,
         ResumeRepository $resumeRepository,
-        AuthService $authService
+        AuthService $authService,
+        Uploader $uploader
     ) {
         $this->serializer = $serializer;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
         $this->resumeRepository = $resumeRepository;
         $this->authService = $authService;
+        $this->uploader = $uploader;
     }
 
     /**
@@ -78,6 +82,25 @@ final class ResumeController extends BaseController
         );
 
         return $this->respond('resume_infos', json_decode($json));
+    }
+
+    /**
+     * @Route("/{id}", name="delete", methods={"DELETE"})
+     */
+    public function delete(int $id): JsonResponse
+    {
+        $resume = $this->getAndVerifyResume($id);
+
+        if (!$resume instanceof Resume) {
+            return $this->respondWithError($resume);
+        }
+
+        $this->uploader->remove($resume->getCv());
+
+        $this->entityManager->remove($resume);
+        $this->entityManager->flush();
+
+        return $this->respond('resume_removed');
     }
 
     /**
