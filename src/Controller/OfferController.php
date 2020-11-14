@@ -92,6 +92,20 @@ final class OfferController extends BaseController
     }
 
     /**
+     * @Route("", name="all", methods={"GET"})
+     */
+    public function all(): JsonResponse
+    {
+        $json = $this->serializer->serialize(
+            $this->offerRepository->getActive(),
+            'json',
+            ['groups' => 'offer_read']
+        );
+
+        return $this->respond('offers_infos', json_decode($json));
+    }
+
+    /**
      * @Route("/{id}", name="update", methods={"PATCH"})
      */
     public function update(int $id, Request $request): JsonResponse

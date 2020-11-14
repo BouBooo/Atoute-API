@@ -21,6 +21,12 @@ class Offer
     use TypeTrait;
     use ActivityTrait;
 
+    public const DRAFT = "draft";
+    public const PUBLISHED = "published";
+    public const CLOSED = "closed";
+
+    public static array $offerStatus = [self::DRAFT, self::PUBLISHED, self::CLOSED];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -75,6 +81,12 @@ class Offer
      * @Groups({"offer_read"})
      */
     private ?int $salary = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"offer_read"})
+     */
+    private string $status = self::DRAFT;
 
     /**
      * @ORM\ManyToOne(targetEntity=Company::class, inversedBy="offers")
@@ -180,6 +192,18 @@ class Offer
     public function setSalary(?int $salary): self
     {
         $this->salary = $salary;
+
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

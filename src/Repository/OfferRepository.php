@@ -40,4 +40,14 @@ class OfferRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    public function getActive()
+    {
+        return $this->createQueryBuilder('o')
+            ->where('o.status = :status')
+            ->setParameter('status', Offer::PUBLISHED)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
