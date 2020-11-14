@@ -110,6 +110,7 @@ class AppFixtures extends Fixture
                 ->setType($this->fixturesUtils->getRandomItem(EntityEnum::$types))
                 ->setActivity($this->fixturesUtils->getRandomItem(EntityEnum::$activities))
                 ->setSalary($o < 20 ? $this->faker->numberBetween(300, 7000) : null)
+                ->setStatus($this->fixturesUtils->getRandomItem(Offer::$offerStatus))
                 ->setOwner($this->fixturesUtils->getRandomItem($companies))
             ;
 

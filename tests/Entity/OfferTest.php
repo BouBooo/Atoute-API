@@ -22,6 +22,7 @@ class OfferTest extends ApiTestCase
             ->setDescription('Blablala')
             ->setCity('Bordeaux')
             ->setPostalCode('33100')
+            ->setStatus(Offer::DRAFT)
             ->setOwner($company);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Controller\BaseController;
+use App\Entity\Offer;
 use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -24,6 +25,7 @@ class OfferControllerTest extends ApiTestCase
             'salary' => null,
             'type' => 'Offer type',
             'activity' => 'Offer activity',
+            'status' => Offer::DRAFT
         ];
 
         $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
@@ -44,6 +46,7 @@ class OfferControllerTest extends ApiTestCase
             'postal_code' => '33000',
             'type' => 'Offer type',
             'activity' => "Activity",
+            'status' => Offer::DRAFT
         ];
 
         $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
