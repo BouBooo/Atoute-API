@@ -37,6 +37,7 @@ class OfferType extends AbstractType
             ])
             ->add('type')
             ->add('activity')
+            ->add('status')
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
