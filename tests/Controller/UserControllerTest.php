@@ -17,7 +17,7 @@ class UserControllerTest extends ApiTestCase
         $this->jsonRequest('GET', '/user', [], $company->getAccessToken());
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertEquals($company->getRole(), 'company');
+        $this->assertEquals('company', $company->getRole());
     }
 
     public function testGetParticular(): void
@@ -29,6 +29,6 @@ class UserControllerTest extends ApiTestCase
         $this->jsonRequest('GET', '/user', [], $particular->getAccessToken());
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertEquals($particular->getRole(), 'particular');
+        $this->assertEquals('particular', $particular->getRole());
     }
 }
