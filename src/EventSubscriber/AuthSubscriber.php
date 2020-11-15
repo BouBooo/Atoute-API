@@ -28,7 +28,7 @@ class AuthSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        $email = $this->mailer->buildEmail($user->getEmail(), 'emails/confirm_account.html.twig', [
+        $email = $this->mailer->buildEmail($user->getEmail(), 'auth/confirm_account.html.twig', [
             'id' => $user->getId(),
             'token' => $user->getConfirmationToken()
         ]);
@@ -40,7 +40,7 @@ class AuthSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        $email = $this->mailer->buildEmail($user->getEmail(), 'emails/reset_password.html.twig', [
+        $email = $this->mailer->buildEmail($user->getEmail(), 'auth/reset_password.html.twig', [
             'id' => $user->getId(),
             'token' => $user->getResetPasswordToken()
         ]);
