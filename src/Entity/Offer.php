@@ -208,7 +208,7 @@ class Offer
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): ?Company
     {
         return $this->owner;
     }

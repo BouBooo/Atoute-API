@@ -58,7 +58,7 @@ class AppFixtures extends Fixture
             $user->setPassword($this->passwordEncoder->encodePassword($user, self::PASSWORD))
                 ->setIsVerified(true);
 
-            if ($user instanceof Company) {
+            if ($user->isCompany()) {
                 $user->setEmail(sprintf('company%s@test.com', $u))
                     ->setCompanyName($this->faker->company);
             } else {
@@ -139,11 +139,11 @@ class AppFixtures extends Fixture
 
     private function getParticulars(): array
     {
-        return array_filter($this->users, static fn ($user) => $user instanceof Particular);
+        return array_filter($this->users, static fn ($user) => $user->isParticular());
     }
 
     private function getCompanies(): array
     {
-        return array_filter($this->users, static fn ($user) => $user instanceof Company);
+        return array_filter($this->users, static fn ($user) => $user->isCompany());
     }
 }

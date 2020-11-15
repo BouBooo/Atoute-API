@@ -31,14 +31,13 @@ final class ResumeController extends BaseController
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
         FormFactoryInterface $formFactory,
-        ResumeRepository $resumeRepository,
         AuthService $authService,
         Uploader $uploader
     ) {
         $this->serializer = $serializer;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
-        $this->resumeRepository = $resumeRepository;
+        $this->resumeRepository = $entityManager->getRepository(Resume::class);
         $this->authService = $authService;
         $this->uploader = $uploader;
     }
@@ -50,7 +49,7 @@ final class ResumeController extends BaseController
     {
         $data = $request->request->all();
 
-        if ($this->authService->getUser() instanceof Company) {
+        if ($this->authService->getUser()->isCompany()) {
             return $this->respondWithError('company_can_create_resume');
         }
 

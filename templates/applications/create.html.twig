@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une nouvelle candidature vient d'être effectuée{% endblock %}
+
+{% block main_content %}
+    Vous avez une nouvelle candidature pour l'offre
+    <a href="{{ prefix(app.request) }}/offres/{{ offer.id }}"><strong>{{ offer.title }}</strong></a>
+{% endblock %}
+
+{% block btn %}
+    <a href="{{ prefix(app.request) }}/offres/{{ offer.id }}/candidatures/{{ application.id }}">Voir la candidature</a>
+{% endblock %}

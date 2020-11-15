@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Application;
-use App\Entity\Company;
 use App\Entity\Offer;
+use App\Event\ApplicationCreatedEvent;
 use App\Repository\ApplicationRepository;
 use App\Repository\OfferRepository;
 use App\Service\AuthService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ class ApplicationController extends BaseController
     /**
      * @Route("", name="create", methods={"POST"})
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, EventDispatcherInterface $dispatcher): JsonResponse
     {
         $data = $this->testJson($request);
 
@@ -55,7 +56,7 @@ class ApplicationController extends BaseController
 
         $user = $this->authService->getUser();
 
-        if ($user instanceof Company) {
+        if ($user->isCompany()) {
             return $this->respondWithError('company_cant_applied');
         }
 
@@ -71,6 +72,8 @@ class ApplicationController extends BaseController
 
         $this->manager->persist($application);
         $this->manager->flush();
+
+        $dispatcher->dispatch(new ApplicationCreatedEvent($application));
 
         return $this->respond('application_created');
     }
@@ -110,7 +113,7 @@ class ApplicationController extends BaseController
 
         $user = $this->authService->getUser();
 
-        if ($user instanceof Company || !$application->isOwner($user->getId())) {
+        if ($user->isCompany() || !$application->isOwner($user->getId())) {
             return $this->respondWithError("bad_application_owner");
         }
 

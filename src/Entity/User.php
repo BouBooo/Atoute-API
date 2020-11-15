@@ -119,6 +119,16 @@ abstract class User implements UserInterface, \Serializable
 
     abstract public function getRoles(): array;
 
+    public function isCompany(): bool
+    {
+        return $this instanceof Company;
+    }
+
+    public function isParticular(): bool
+    {
+        return $this instanceof Particular;
+    }
+
     public function getAccessToken(): string
     {
         return $this->accessToken;
@@ -176,7 +186,7 @@ abstract class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function isVerified(): ?bool
+    public function isVerified(): bool
     {
         return $this->isVerified;
     }

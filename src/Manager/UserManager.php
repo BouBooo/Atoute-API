@@ -20,13 +20,13 @@ class UserManager
 
     public function update(array $data, $user): void
     {
-        if ($user instanceof Particular) {
+        if ($user->isParticular()) {
             empty($data['firstName']) ?: $user->setFirstName($data['firstName']);
             empty($data['lastName']) ?: $user->setLastName($data['lastName']);
             empty($data['civility']) ?: $user->setCivility($data['civility']);
         }
 
-        if ($user instanceof Company) {
+        if ($user->isCompany()) {
             empty($data['companyName']) ?: $user->setCompanyName($data['companyName']);
         }
 

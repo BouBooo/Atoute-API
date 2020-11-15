@@ -29,13 +29,12 @@ final class OfferController extends BaseController
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
         FormFactoryInterface $formFactory,
-        OfferRepository $offerRepository,
         AuthService $authService
     ) {
         $this->serializer = $serializer;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
-        $this->offerRepository = $offerRepository;
+        $this->offerRepository = $entityManager->getRepository(Offer::class);
         $this->authService = $authService;
     }
 
@@ -46,7 +45,7 @@ final class OfferController extends BaseController
     {
         $data = $this->testJson($request);
 
-        if ($this->authService->getUser() instanceof Particular) {
+        if ($this->authService->getUser()->isParticular()) {
             return $this->respondWithError('only_companies_can_create_offer');
         }
 
@@ -97,7 +96,7 @@ final class OfferController extends BaseController
     public function all(): JsonResponse
     {
         $json = $this->serializer->serialize(
-            $this->offerRepository->getActive(),
+            $this->offerRepository->getPublish(),
             'json',
             ['groups' => 'offer_read']
         );
