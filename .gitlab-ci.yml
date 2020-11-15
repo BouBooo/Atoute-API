@@ -27,7 +27,9 @@ test:
   script:
     - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
     - cp .env.test.dist .env.test
+    - docker run -d -p 1026:1025 -p 8026:8025 --name mail_unit mailhog/mailhog
     - php bin/phpunit
+    - docker stop mail_unit && docker rm mail_unit -f
 
 build:
   type: build
