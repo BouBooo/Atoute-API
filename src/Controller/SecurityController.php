@@ -6,7 +6,6 @@ use App\Entity\Company;
 use App\Entity\Particular;
 use App\Entity\User;
 use App\Event\UserCreatedEvent;
-use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use App\Service\AuthService;
 use App\Service\TokenGeneratorService;
