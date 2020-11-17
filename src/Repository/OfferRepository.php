@@ -45,6 +45,7 @@ class OfferRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('o')
             ->where('o.status = :status')
+            ->orderBy('o.publishedAt', 'DESC')
             ->setParameter('status', Offer::PUBLISHED)
             ->getQuery()
             ->getResult()

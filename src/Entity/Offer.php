@@ -89,6 +89,12 @@ class Offer
     private string $status = self::DRAFT;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"offer_read"})
+     */
+    private ?\DateTime $publishedAt = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Company::class, inversedBy="offers")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"offer_read"})
@@ -204,6 +210,18 @@ class Offer
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTime
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTime $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
 
         return $this;
     }

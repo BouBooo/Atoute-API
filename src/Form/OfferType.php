@@ -56,6 +56,10 @@ class OfferType extends AbstractType
         if ($endAt = $form->get('end_at')->getData()) {
             $offer->setEndAt((new \DateTime())->setTimestamp($endAt));
         }
+
+        if ($form->get('status')->getData() === Offer::PUBLISHED) {
+            $offer->setPublishedAt(new \DateTime());
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

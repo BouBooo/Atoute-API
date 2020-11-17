@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Offer;
 use App\Form\OfferType;
-use App\Entity\Particular;
 use App\Service\AuthService;
 use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;

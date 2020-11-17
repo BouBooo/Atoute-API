@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Company;
 use App\Entity\Resume;
 use App\Form\ResumeType;
 use App\Uploader\Uploader;
@@ -88,6 +87,20 @@ final class ResumeController extends BaseController
         );
 
         return $this->respond('resume_infos', json_decode($json));
+    }
+
+    /**
+     * @Route("", name="all", methods={"GET"})
+     */
+    public function all(): JsonResponse
+    {
+        $json = $this->serializer->serialize(
+            $this->resumeRepository->getAll(),
+            'json',
+            ['groups' => 'resume_read']
+        );
+
+        return $this->respond('resumes_infos', json_decode($json));
     }
 
     /**

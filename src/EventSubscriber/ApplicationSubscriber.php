@@ -18,7 +18,7 @@ class ApplicationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ApplicationCreatedEvent::class => 'onParticularApplied'
+            ApplicationCreatedEvent::class => 'onParticularApplied',
         ];
     }
 
@@ -27,11 +27,20 @@ class ApplicationSubscriber implements EventSubscriberInterface
         $offerOwner = $event->getOfferOwner();
         $application = $event->getApplication();
 
-        $email = $this->mailer->buildEmail($offerOwner->getEmail(), 'applications/create.html.twig', [
+        $emailCompany = $this->mailer->buildEmail($offerOwner->getEmail(), 'applications/create.html.twig', [
             'offer' => $application->getOffer(),
-            'application' => $application
+            'application' => $application,
+            'isParticular' => false
         ]);
 
-        $this->mailer->send($email);
+        $this->mailer->send($emailCompany);
+
+        $emailPart = $this->mailer->buildEmail($application->getCandidate()->getEmail(), 'applications/create.html.twig', [
+            'offer' => $application->getOffer(),
+            'application' => $application,
+            'isParticular' => true
+        ]);
+
+        $this->mailer->send($emailPart);
     }
 }
