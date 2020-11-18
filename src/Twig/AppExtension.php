@@ -15,7 +15,7 @@ class AppExtension extends AbstractExtension
         $this->requestStack = $requestStack;
     }
 
-    public function getFilters(): array
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('prefix', [$this, 'getUrl'])
