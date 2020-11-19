@@ -7,6 +7,7 @@ use App\Form\OfferType;
 use App\Service\AuthService;
 use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -74,6 +75,20 @@ final class OfferController extends BaseController
     }
 
     /**
+     * @Route("", name="all", methods={"GET"})
+     */
+    public function all(): JsonResponse
+    {
+        $json = $this->serializer->serialize(
+            $this->offerRepository->getPublish(),
+            'json',
+            ['groups' => 'offer_read']
+        );
+
+        return $this->respond('offers_infos', json_decode($json));
+    }
+
+    /**
      * @Route("/{id}", name="index", methods={"GET"})
      */
     public function index(int $id): JsonResponse
@@ -87,20 +102,6 @@ final class OfferController extends BaseController
         );
 
         return $this->respond('offer_infos', json_decode($json));
-    }
-
-    /**
-     * @Route("", name="all", methods={"GET"})
-     */
-    public function all(): JsonResponse
-    {
-        $json = $this->serializer->serialize(
-            $this->offerRepository->getPublish(),
-            'json',
-            ['groups' => 'offer_read']
-        );
-
-        return $this->respond('offers_infos', json_decode($json));
     }
 
     /**

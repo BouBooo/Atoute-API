@@ -28,6 +28,8 @@ security:
             logout:
                 path: app_logout
         api:
+            anonymous: lazy
+            lazy: true
             pattern: ^/
             guard:
                 authenticators:
@@ -42,4 +44,6 @@ security:
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/offers, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
+        - { path: ^/offers/\d+$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
         - { path: ^/, roles: ROLE_USER }
