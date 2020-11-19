@@ -21,7 +21,7 @@ class OfferIndexer
     public function buildDocument(Offer $offer): Document
     {
         return new Document(
-            (string) $offer->getId(), // Manually defined ID,
+            strval($offer->getId()), // Manually defined ID,
             [
                 'id' => $offer->getId(),
                 'title' => $offer->getTitle(),
