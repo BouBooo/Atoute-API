@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/applications", name="application_")
  */
-class ApplicationController extends BaseController
+final class ApplicationController extends BaseController
 {
     private AuthService $authService;
     private EntityManagerInterface $manager;

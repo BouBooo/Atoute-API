@@ -42,3 +42,7 @@ services:
     App\Service\MailerService:
         arguments:
             $from: '%env(MAILER_FROM)%'
+
+    Elastica\Client:
+        $config:
+            host: 'elasticsearch' # or 127.0.0.1
