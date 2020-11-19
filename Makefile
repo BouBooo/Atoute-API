@@ -37,6 +37,10 @@ seed: vendor/autoload.php ## Génère des données dans la base de données (doc
 	$(sy) doctrine:schema:update -f
 	$(sy) doctrine:fixtures:load -n
 
+.PHONY: reindex ## Reindex elasticsearch schema
+reindex: vendor/autoload.php
+	$(sy) elastic:reindex
+
 .PHONY: cc
 cc: vendor/autoload.php ## Vide le cache
 	$(sy) cache:clear

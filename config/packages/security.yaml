@@ -17,7 +17,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         web:
-            pattern: ^/(auth|reset-password)
+            pattern: ^/(auth|reset-password|search)
             anonymous: true
             lazy: true
             provider: app_user_provider
@@ -41,4 +41,5 @@ security:
         - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class IndexBuilder
 {
-    private const INDEX_NAME = "site";
+    public const INDEX_NAME = "site";
     private const PATH = "/../../../config/elasticsearch/elasticsearch_index_offers.yaml";
 
     private Client $client;
@@ -20,7 +20,7 @@ class IndexBuilder
 
     public function create(): Index
     {
-        // We name our index "offers"
+        // We name our index "site"
         $index = $this->client->getIndex(self::INDEX_NAME);
 
         $settings = Yaml::parse(
