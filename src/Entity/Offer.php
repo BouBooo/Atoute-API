@@ -21,9 +21,9 @@ class Offer
     use TypeTrait;
     use ActivityTrait;
 
-    public const DRAFT = "draft";
-    public const PUBLISHED = "published";
-    public const CLOSED = "closed";
+    const DRAFT = "draft";
+    const PUBLISHED = "published";
+    const CLOSED = "closed";
 
     public static array $offerStatus = [self::DRAFT, self::PUBLISHED, self::CLOSED];
 
