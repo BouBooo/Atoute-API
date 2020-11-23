@@ -6,11 +6,11 @@ abstract class EntityEnum
 {
     // Activities
     public const IT = 'IT';
-    public const PHARMACEUTICAL = 'Pharmaceutical industry';
-    public const LOGISTIC = 'Logictic';
-    public const FOOD = 'Food industry';
+    public const COMPUTER_SCIENCE = 'Informatique';
+    public const LOGISTIC = 'Logistique';
+    public const FOOD_INDUSTRY = 'Industrie alimentaire';
 
-    public static array $activities = [EntityEnum::IT, EntityEnum::PHARMACEUTICAL, EntityEnum::LOGISTIC, EntityEnum::FOOD];
+    public static array $activities = [EntityEnum::IT, EntityEnum::COMPUTER_SCIENCE, EntityEnum::LOGISTIC, EntityEnum::FOOD_INDUSTRY];
 
     // Type
     public const CDI = 'CDI';

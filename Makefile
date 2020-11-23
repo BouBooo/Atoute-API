@@ -34,6 +34,7 @@ stop: ## Stop les container docker
 .PHONY: seed
 seed: vendor/autoload.php ## Génère des données dans la base de données (docker-compose up doit être lancé)
 	$(sy) doctrine:database:create --if-not-exists
+	$(sy) doctrine:schema:drop -f
 	$(sy) doctrine:schema:update -f
 	$(sy) doctrine:fixtures:load -n
 

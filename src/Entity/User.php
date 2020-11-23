@@ -22,7 +22,7 @@ abstract class User implements UserInterface, \Serializable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"private"})
+     * @Groups({"offer_read", "resume_read", "application_read"})
      */
     protected ?int $id = null;
 

@@ -13,8 +13,8 @@
 
 {% block btn %}
     {% if isParticular %}
-        <a href="{{ prefix() }}/applications/{{ application.id }}" style="color: #4EAFA4">Voir ma candidature</a>
+        <a href="{{ prefix() }}/applications/{{ application.id }}" style="color: white">Voir ma candidature</a>
     {% else %}
-        <a href="{{ prefix() }}/offers/{{ offer.id }}/applications/{{ application.id }}" style="color: #4EAFA4">Voir la candidature</a>
+        <a href="{{ prefix() }}/offers/{{ offer.id }}/applications/{{ application.id }}" style="color: white">Voir la candidature</a>
     {% endif %}
 {% endblock %}

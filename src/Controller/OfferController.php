@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Offer;
+use App\Enum\EntityEnum;
 use App\Form\OfferType;
 use App\Service\AuthService;
 use App\Repository\OfferRepository;
@@ -148,6 +149,17 @@ final class OfferController extends BaseController
         $this->entityManager->flush();
 
         return $this->respond('offer_removed');
+    }
+
+    /**
+     * @Route("/rules", name="rules", methods={"GET"})
+     */
+    public function rules(): JsonResponse // @TODO: CREATE SPECIALS TABLES FOR ACTIVITIES && TYPES
+    {
+        return $this->respond('', [
+            'activities' => EntityEnum::$activities,
+            'types' => EntityEnum::$types
+        ]);
     }
 
     /**
