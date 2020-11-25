@@ -129,6 +129,7 @@ class AppFixtures extends Fixture
                 ->setMessage($a < 30 ? $this->fixturesUtils->generateParagraph() : null)
                 ->setCandidate($this->fixturesUtils->getRandomItem($particulars))
                 ->setOffer($this->fixturesUtils->getRandomItem($this->offers))
+                ->setStatus($this->fixturesUtils->getRandomItem(Application::$applicationStatus))
             ;
 
             $this->applications[] = $application;

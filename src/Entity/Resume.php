@@ -18,44 +18,44 @@ class Resume
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private string $title = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private string $contractType = '';
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private ?string $description = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private string $cv = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private string $activityArea = '';
 
     /**
      * @ORM\ManyToOne(targetEntity=Particular::class, inversedBy="resumes")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"resume_read"})
+     * @Groups({"resume_read", "application_read"})
      */
     private Particular $owner;
 

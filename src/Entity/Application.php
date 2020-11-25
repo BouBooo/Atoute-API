@@ -6,6 +6,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=ApplicationRepository::class)
@@ -13,6 +14,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Application
 {
     use TimestampableTrait;
+
+    public const SEND = "send";
+    public const ACCEPTED = "accepted";
+    public const REFUSED = "refused";
+
+    public static array $applicationStatus = [self::SEND, self::ACCEPTED, self::REFUSED];
 
     /**
      * @ORM\Id
@@ -41,6 +48,12 @@ class Application
      * @Groups({"application_read"})
      */
     private ?string $message = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": "self::SEND"})
+     * @Groups({"application_read"})
+     */
+    private string $status = self::SEND;
 
     public function getId(): ?int
     {
@@ -89,6 +102,18 @@ class Application
     public function setMessage(?string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

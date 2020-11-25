@@ -45,26 +45,26 @@ class Offer
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="The description field should not be blank")
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private string $description = '';
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private ?\DateTime $startAt = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private ?\DateTime $endAt = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The city field should not be blank")
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private string $city = '';
 
@@ -72,32 +72,32 @@ class Offer
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The postal_code field should not be blank")
      * @Assert\Regex("/^\d{5}$/")
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private string $postalCode = '';
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private ?int $salary = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private string $status = self::DRAFT;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private ?\DateTime $publishedAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Company::class, inversedBy="offers")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read"})
      */
     private Company $owner;
 

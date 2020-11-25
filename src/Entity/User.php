@@ -28,7 +28,7 @@ abstract class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"read"})
+     * @Groups({"read", "resume_read", "application_read"})
      */
     protected string $email = '';
 

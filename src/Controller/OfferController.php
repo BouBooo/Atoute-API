@@ -78,10 +78,12 @@ final class OfferController extends BaseController
     /**
      * @Route("", name="all", methods={"GET"})
      */
-    public function all(): JsonResponse
+    public function all(Request $request): JsonResponse
     {
+        $limit = $request->query->get('l', null);
+
         $json = $this->serializer->serialize(
-            $this->offerRepository->getPublish(),
+            $this->offerRepository->getPublish($limit),
             'json',
             ['groups' => 'offer_read']
         );

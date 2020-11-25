@@ -23,7 +23,7 @@ class Company extends User
 
     /**
      * @ORM\Column(type="string", length=180)
-     * @Groups({"offer_read", "read"})
+     * @Groups({"offer_read", "read", "application_read"})
      */
     private string $companyName = '';
 
