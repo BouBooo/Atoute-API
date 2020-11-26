@@ -4,8 +4,6 @@ namespace App\Event;
 
 use App\Entity\Application;
 use App\Entity\Company;
-use App\Entity\Particular;
-use App\Entity\User;
 use Symfony\Contracts\EventDispatcher\Event;
 
 final class ApplicationCreatedEvent extends Event

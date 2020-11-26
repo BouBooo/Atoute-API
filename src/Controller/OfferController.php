@@ -80,7 +80,7 @@ final class OfferController extends BaseController
      */
     public function all(Request $request): JsonResponse
     {
-        $limit = $request->query->get('l', null);
+        $limit = $request->query->getInt('l', null);
 
         $json = $this->serializer->serialize(
             $this->offerRepository->getPublish($limit),

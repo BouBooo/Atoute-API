@@ -2,6 +2,7 @@
 
 namespace App\Elasticsearch\Query;
 
+use App\Entity\Offer;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MultiMatch;
@@ -21,7 +22,7 @@ class OfferQuery
         ]);
 
         $filter = new Query\Term();
-        $filter->setTerm('status', 'published'); // Get offers published
+        $filter->setTerm('status', Offer::PUBLISHED); // Get offers published
 
         $bool = new BoolQuery();
         $bool->addMust($match);
