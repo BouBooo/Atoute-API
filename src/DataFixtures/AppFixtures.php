@@ -63,6 +63,7 @@ class AppFixtures extends Fixture
                     ->setCompanyName($this->faker->company);
             } else {
                 $user->setEmail(sprintf('particular%s@test.com', $u))
+                    ->setCivility($this->fixturesUtils->getRandomItem(Particular::$civilities))
                     ->setFirstName($this->faker->firstName)
                     ->setLastName($this->faker->lastName);
             }
@@ -79,7 +80,7 @@ class AppFixtures extends Fixture
     {
         $particulars = $this->getParticulars();
 
-        for ($r = 0; $r < count($particulars); ++$r) {
+        for ($r = 0, $rMax = count($particulars); $r < $rMax; ++$r) {
             $resume = (new Resume())
                 ->setTitle($this->faker->jobTitle)
                 ->setCv(sprintf('/no-cv-%s', $r))

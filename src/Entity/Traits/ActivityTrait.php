@@ -10,7 +10,7 @@ trait ActivityTrait
 {
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_read", "read"})
      */
     protected string $activity = '';
 

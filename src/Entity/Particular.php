@@ -12,6 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Particular extends User
 {
+    public const MR = 'Mr';
+    public const Mme = "Mme";
+
+    public static array $civilities = [self::MR, self::Mme];
+
     public const ROLE = 'particular';
 
     /**
