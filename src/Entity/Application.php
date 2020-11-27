@@ -50,7 +50,7 @@ class Application
     private ?string $message = null;
 
     /**
-     * @ORM\Column(type="string", length=255, options={"default": "self::SEND"})
+     * @ORM\Column(type="string", length=255, options={"default":"self::SEND"})
      * @Groups({"application_read"})
      */
     private string $status = self::SEND;
