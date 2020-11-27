@@ -19,10 +19,12 @@ class ResumeRepository extends ServiceEntityRepository
         parent::__construct($registry, Resume::class);
     }
 
-    public function getAll()
+    public function getAllPublics()
     {
         return $this->createQueryBuilder('r')
+            ->where('r.isPublic = :public')
             ->orderBy('r.createdAt', 'DESC')
+            ->setParameter('public', true)
             ->getQuery()
             ->getResult()
         ;

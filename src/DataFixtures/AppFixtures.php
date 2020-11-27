@@ -88,6 +88,7 @@ class AppFixtures extends Fixture
                 ->setActivityArea($this->fixturesUtils->getRandomItem(EntityEnum::$activities))
                 ->setOwner($this->fixturesUtils->getRandomItem($particulars))
                 ->setDescription($r < count($particulars) / 2 ? $this->fixturesUtils->generateParagraph(2) : null)
+                ->setIsPublic($r < $rMax / 2)
             ;
 
             $this->resumes[] = $resume;

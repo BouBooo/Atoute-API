@@ -53,6 +53,12 @@ class Resume
     private string $activityArea = '';
 
     /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @Groups({"resume_read", "application_read"})
+     */
+    private bool $isPublic = false;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Particular::class, inversedBy="resumes")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"resume_read", "application_read"})
@@ -120,6 +126,18 @@ class Resume
     public function setActivityArea(string $activityArea): self
     {
         $this->activityArea = $activityArea;
+
+        return $this;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }

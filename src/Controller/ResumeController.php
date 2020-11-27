@@ -95,7 +95,7 @@ final class ResumeController extends BaseController
     public function all(): JsonResponse
     {
         $json = $this->serializer->serialize(
-            $this->resumeRepository->getAll(),
+            $this->resumeRepository->getAllPublics(),
             'json',
             ['groups' => 'resume_read']
         );

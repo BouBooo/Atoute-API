@@ -34,6 +34,9 @@ class ResumeType extends AbstractType
             ])
             ->add('contractType')
             ->add('activityArea')
+            ->add('isPublic', null, [
+                'required' => false
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
