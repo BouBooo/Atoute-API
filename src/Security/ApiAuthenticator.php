@@ -16,6 +16,10 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class ApiAuthenticator extends AbstractGuardAuthenticator
 {
+    private const NOT_AVAILABLE_ROUTES = [
+        'resume_index', 'resume_all', 'offer_index', 'offer_all'
+    ];
+
     private string $headerAuthToken;
     private EntityManagerInterface $entityManager;
 
@@ -27,7 +31,8 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request): bool
     {
-        return $request->headers->has($this->headerAuthToken);
+        return !in_array($request->attributes->get('_route'), self::NOT_AVAILABLE_ROUTES)
+            && $request->headers->has($this->headerAuthToken);
     }
 
     public function getCredentials(Request $request): array
