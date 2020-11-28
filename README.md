@@ -1,6 +1,6 @@
 # Atoute 👋 - back
 
-[![pipeline status](https://gitlab.com/QuentG/atoute-back/badges/master/pipeline.svg)](https://gitlab.com/QuentG/atoute-back/-/commits/master)
+[![pipeline status](https://gitlab.com/QuentG/atoute-back/badges/develop/pipeline.svg)](https://gitlab.com/QuentG/atoute-back/-/commits/develop)
 
 ### Prerequisites
 

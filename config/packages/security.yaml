@@ -45,5 +45,7 @@ security:
         - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/offers, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
+        - { path: ^/resumes, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
+        - { path: ^/resumes/\d+$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
         - { path: ^/offers/\d+$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
         - { path: ^/, roles: ROLE_USER }
