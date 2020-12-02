@@ -20,12 +20,13 @@ class Application
     public const REFUSED = "refused";
 
     public static array $applicationStatus = [self::SEND, self::ACCEPTED, self::REFUSED];
+    public static array $updatedStatus = [self::ACCEPTED, self::REFUSED];
 
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"application_read"})
+     * @Groups({"application_read", "application_offer_read"})
      */
     private ?int $id = null;
 
@@ -39,13 +40,13 @@ class Application
     /**
      * @ORM\ManyToOne(targetEntity=Particular::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"application_read"})
+     * @Groups({"application_read", "application_offer_read"})
      */
     private Particular $candidate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"application_read"})
+     * @Groups({"application_read", "application_offer_read"})
      */
     private ?string $message = null;
 
@@ -54,6 +55,13 @@ class Application
      * @Groups({"application_read"})
      */
     private string $status = self::SEND;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Resume::class, inversedBy="applications")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"application_read", "application_offer_read"})
+     */
+    private Resume $resume;
 
     public function getId(): ?int
     {
@@ -90,6 +98,18 @@ class Application
     public function setCandidate(Particular $candidate): self
     {
         $this->candidate = $candidate;
+
+        return $this;
+    }
+
+    public function getResume(): Resume
+    {
+        return $this->resume;
+    }
+
+    public function setResume(Resume $resume): self
+    {
+        $this->resume = $resume;
 
         return $this;
     }

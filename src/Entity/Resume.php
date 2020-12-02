@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ResumeRepository;
 use App\Entity\Traits\TimestampableTrait;
@@ -42,7 +44,7 @@ class Resume
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_offer_read"})
      */
     private string $cv = '';
 
@@ -64,6 +66,17 @@ class Resume
      * @Groups({"resume_read", "application_read"})
      */
     private Particular $owner;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Application::class, mappedBy="resume", orphanRemoval=true)
+     * @Groups({"resume_read", "application_read"})
+     */
+    private Collection $applications;
+
+    public function __construct()
+    {
+        $this->applications = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -157,5 +170,32 @@ class Resume
     public function isOwner(User $user): bool
     {
         return $this->owner->getId() === $user->getId();
+    }
+
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): self
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications[] = $application;
+            $application->setResume($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): self
+    {
+        if ($this->applications->removeElement($application)) {
+            // set the owning side to null (unless already changed)
+            if ($application->getResume() === $this) {
+                $application->setResume(null);
+            }
+        }
+
+        return $this;
     }
 }

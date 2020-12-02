@@ -155,14 +155,22 @@ final class OfferController extends BaseController
     }
 
     /**
-     * @Route("/rules", name="rules", methods={"GET"})
+     * @Route("/{id}/applications", name="applications", methods={"GET"})
      */
-    public function rules(): JsonResponse // @TODO: CREATE SPECIALS TABLES FOR ACTIVITIES && TYPES
+    public function applications(int $id): JsonResponse
     {
-        return $this->respond('', [
-            'activities' => EntityEnum::$activities,
-            'types' => EntityEnum::$types
-        ]);
+        $offer = $this->getAndVerifyOffer($id);
+
+        if (!$offer instanceof Offer) {
+            return $this->respondWithError($offer);
+        }
+
+        $applications = [];
+        foreach ($offer->getApplicationsToBeProcessed() as $application) {
+            $applications[] = json_decode($this->serializer->serialize($application, 'json', ['groups' => 'application_offer_read']));
+        }
+
+        return $this->respond('', $applications);
     }
 
     /**

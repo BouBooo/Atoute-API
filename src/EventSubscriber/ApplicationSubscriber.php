@@ -2,7 +2,9 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Application;
 use App\Event\ApplicationCreatedEvent;
+use App\Event\ApplicationStatusUpdatedEvent;
 use App\Service\MailerService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -19,6 +21,7 @@ class ApplicationSubscriber implements EventSubscriberInterface
     {
         return [
             ApplicationCreatedEvent::class => 'onParticularApplied',
+            ApplicationStatusUpdatedEvent::class => 'onStatusUpdated'
         ];
     }
 
@@ -42,5 +45,21 @@ class ApplicationSubscriber implements EventSubscriberInterface
         ]);
 
         $this->mailer->send($emailPart);
+    }
+
+    public function onStatusUpdated(ApplicationStatusUpdatedEvent $event): void
+    {
+        $application = $event->getApplication();
+        $applicationOwner = $event->getApplicationOwner();
+        $message = $event->getMessage();
+
+        $email = $this->mailer->buildEmail($applicationOwner->getEmail(), 'applications/update_status.html.twig', [
+            'offer' => $application->getOffer(),
+            'companyName' => $application->getOffer()->getOwner()->getCompanyName(),
+            'message' => $message,
+            'isAccepted' => $application->getStatus() === Application::ACCEPTED
+        ]);
+
+        $this->mailer->send($email);
     }
 }

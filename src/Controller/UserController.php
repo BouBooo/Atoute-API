@@ -122,6 +122,7 @@ final class UserController extends BaseController
 
         $offers = [];
         foreach ($user->getOffers() as $offer) {
+            $offer->setApplicationsCount();
             $offers[] = json_decode($this->serializer->serialize($offer, 'json', ['groups' => 'offer_read']));
         }
 

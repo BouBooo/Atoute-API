@@ -108,6 +108,11 @@ class Offer
      */
     private Collection $applications;
 
+    /**
+     * @Groups({"offer_read"})
+     */
+    private int $applicationsCount = 0;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
@@ -243,6 +248,11 @@ class Offer
         return $this->owner->getId() === $user->getId();
     }
 
+    public function getApplicationsToBeProcessed(): Collection
+    {
+        return $this->applications->filter(static fn (Application $application) => $application->getStatus() === Application::SEND);
+    }
+
     public function getApplications(): Collection
     {
         return $this->applications;
@@ -254,6 +264,18 @@ class Offer
             $this->applications[] = $application;
             $application->setOffer($this);
         }
+
+        return $this;
+    }
+
+    public function getApplicationsCount(): int
+    {
+        return $this->applicationsCount;
+    }
+
+    public function setApplicationsCount(): self
+    {
+        $this->applicationsCount = $this->applications->filter(fn (Application $application) => $application->getStatus() === Application::SEND)->count();
 
         return $this;
     }
