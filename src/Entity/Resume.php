@@ -68,6 +68,7 @@ class Resume
     private Particular $owner;
 
     /**
+     * @var Collection&iterable<Application>
      * @ORM\OneToMany(targetEntity=Application::class, mappedBy="resume", orphanRemoval=true)
      * @Groups({"resume_read", "application_read"})
      */
@@ -182,18 +183,6 @@ class Resume
         if (!$this->applications->contains($application)) {
             $this->applications[] = $application;
             $application->setResume($this);
-        }
-
-        return $this;
-    }
-
-    public function removeApplication(Application $application): self
-    {
-        if ($this->applications->removeElement($application)) {
-            // set the owning side to null (unless already changed)
-            if ($application->getResume() === $this) {
-                $application->setResume(null);
-            }
         }
 
         return $this;
