@@ -3,12 +3,10 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Offer;
-use App\Entity\Company;
 use App\Entity\Particular;
+use App\Entity\Resume;
 use App\Tests\ApiTestCase;
 use App\Entity\Application;
-use App\Controller\BaseController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ApplicationTest extends ApiTestCase
 {
@@ -17,14 +15,15 @@ class ApplicationTest extends ApiTestCase
      */
     public function buildEntity(): Application
     {
-        ['offer1' => $offer, 'particular1' => $candidate] = $this->loadFixtureFiles([
+        ['offer1' => $offer, 'particular1' => $candidate, 'resume1' => $resume] = $this->loadFixtureFiles([
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
         return (new Application())
             ->setMessage('My message')
             ->setOffer($offer)
-            ->setCandidate($candidate);
+            ->setCandidate($candidate)
+            ->setResume($resume);
     }
 
     public function testValidEntity(): void
@@ -39,5 +38,6 @@ class ApplicationTest extends ApiTestCase
         $this->assertInstanceOf(Application::class, $application);
         $this->assertInstanceOf(Particular::class, $application->getCandidate());
         $this->assertInstanceOf(Offer::class, $application->getOffer());
+        $this->assertInstanceOf(Resume::class, $application->getResume());
     }
 }

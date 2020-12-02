@@ -27,9 +27,19 @@ App\Entity\Particular:
         is_verified: true
         firstname: <firstName()>
         lastname: <lastName()>
-    
+
+App\Entity\Resume:
+    resume{1..10}:
+        title: 'title<current()>'
+        cv: '<paragraph(1)>'
+        contractType: 'contract<current()>'
+        activityArea: 'activityArea<current()>'
+        isPublic: true
+        owner: '@particular<numberBetween(1,10)>'
+
 App\Entity\Application:
     application{1..20}:
         offer: '@offer<numberBetween(1,10)>'
         candidate: '@particular<numberBetween(1,10)>'
         message: '<paragraph(1)>'
+        resume: '@resume<numberBetween(1,10)>'

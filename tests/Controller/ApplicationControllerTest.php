@@ -8,32 +8,34 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ApplicationControllerTest extends ApiTestCase 
 {
-    public function testParticularCanApply(): void
+    public function testParticularCantApply(): void
     {
-        ['particular1' => $particular, 'offer1' => $offer] = $this->loadFixtureFiles([
+        ['particular1' => $particular, 'offer1' => $offer, 'resume1' => $resume] = $this->loadFixtureFiles([
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
         $application = [
             'offerId' => $offer->getId(),
-            'message' => 'Voici ma candidature'
+            'message' => 'Voici ma candidature',
+            'resumeId' => $resume->getId(),
         ];
 
         $response = $this->jsonRequest('POST', '/applications', $application, $particular->getAccessToken());
 
-        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'application_created');
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
+        $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'not_your_resume');
     }
 
     public function testCompanyCanApply(): void
     {
-        ['company1' => $company, 'offer1' => $offer] = $this->loadFixtureFiles([
+        ['company1' => $company, 'offer1' => $offer, 'resume1' => $resume] = $this->loadFixtureFiles([
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
         $application = [
             'offerId' => $offer->getId(),
-            'message' => 'Voici ma candidature'
+            'message' => 'Voici ma candidature',
+            'resumeId' => $resume->getId()
         ];
 
         $response = $this->jsonRequest('POST', '/applications', $application, $company->getAccessToken());
