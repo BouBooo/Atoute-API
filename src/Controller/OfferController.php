@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Offer;
-use App\Enum\EntityEnum;
 use App\Form\OfferType;
 use App\Service\AuthService;
 use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
