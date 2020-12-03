@@ -90,6 +90,41 @@ final class ResumeController extends BaseController
     }
 
     /**
+     * @Route("/{id}", name="update", methods={"PATCH"})
+     */
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $resume = $this->getAndVerifyResume($id);
+
+        if (!$resume instanceof Resume) {
+            return $this->respondWithError($resume);
+        }
+
+        $data = $request->request->all();
+
+        if ($this->authService->getUser()->isCompany()) {
+            return $this->respondWithError('company_can_create_resume');
+        }
+
+        $form = $this->formFactory->create(ResumeType::class, $resume, [
+            'cv' => $request->files->get('cv')
+        ]);
+        $form->submit($data);
+
+        if (!$form->isValid()) {
+            $errors = $this->getFormErrors($form);
+
+            return $this->respondWithError('validation_errors', [
+                'errors' => $errors
+            ]);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->respond('resume_updated');
+    }
+
+    /**
      * @Route("", name="all", methods={"GET"})
      */
     public function all(Request $request): JsonResponse

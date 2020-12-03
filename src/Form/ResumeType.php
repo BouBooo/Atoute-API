@@ -31,6 +31,7 @@ class ResumeType extends AbstractType
             ])
             ->add('cv', FileType::class, [
                 'mapped' => false,
+                'required' => false
             ])
             ->add('contractType')
             ->add('activityArea')
