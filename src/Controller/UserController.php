@@ -103,7 +103,7 @@ final class UserController extends BaseController
         $applications = [];
         /** @var Application $application */
         foreach ($user->getApplications() as $application) {
-            $applications[] = json_decode($this->serializer->serialize($application, 'json', ['groups' => 'application_read', 'enable_max_depth' => true]));
+            $applications[] = json_decode($this->serializer->serialize($application, 'json', ['groups' => 'application_user_read']));
         }
 
         return $this->respond('applications_infos', $applications);

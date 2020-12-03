@@ -26,19 +26,19 @@ class Resume
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_user_read"})
      */
     private string $title = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_user_read"})
      */
     private string $contractType = '';
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_user_read"})
      */
     private ?string $description = null;
 
@@ -50,13 +50,13 @@ class Resume
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_user_read"})
      */
     private string $activityArea = '';
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
-     * @Groups({"resume_read", "application_read"})
+     * @Groups({"resume_read", "application_read", "application_user_read"})
      */
     private bool $isPublic = false;
 

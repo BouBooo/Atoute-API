@@ -26,40 +26,40 @@ class Application
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"application_read", "application_offer_read"})
+     * @Groups({"application_read", "application_offer_read", "application_user_read"})
      */
     private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Offer::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"application_read"})
+     * @Groups({"application_read", "application_user_read"})
      */
     private Offer $offer;
 
     /**
      * @ORM\ManyToOne(targetEntity=Particular::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"application_read", "application_offer_read"})
+     * @Groups({"application_read", "application_offer_read", "application_user_read"})
      */
     private Particular $candidate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"application_read", "application_offer_read"})
+     * @Groups({"application_read", "application_offer_read", "application_user_read"})
      */
     private ?string $message = null;
 
     /**
      * @ORM\Column(type="string", length=255, options={"default":"self::SEND"})
-     * @Groups({"application_read"})
+     * @Groups({"application_read", "application_offer_read", "application_user_read"})
      */
     private string $status = self::SEND;
 
     /**
      * @ORM\ManyToOne(targetEntity=Resume::class, inversedBy="applications")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"application_read", "application_offer_read"})
+     * @Groups({"application_read", "application_offer_read", "application_user_read"})
      */
     private Resume $resume;
 

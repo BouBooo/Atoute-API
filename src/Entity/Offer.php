@@ -31,21 +31,21 @@ class Offer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The title field should not be blank")
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private string $title = '';
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="The description field should not be blank")
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private string $description = '';
 
@@ -64,7 +64,7 @@ class Offer
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The city field should not be blank")
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private string $city = '';
 
@@ -72,13 +72,13 @@ class Offer
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="The postal_code field should not be blank")
      * @Assert\Regex("/^\d{5}$/")
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private string $postalCode = '';
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"offer_read", "application_read"})
+     * @Groups({"offer_read", "application_read", "application_user_read"})
      */
     private ?int $salary = null;
 
@@ -104,7 +104,7 @@ class Offer
     /**
      * @var Collection&iterable<Application>
      * @ORM\OneToMany(targetEntity=Application::class, mappedBy="offer", orphanRemoval=true)
-     * @Groups({"offer_read"})
+     * @Groups({"offer_read", "application_offer_read"})
      */
     private Collection $applications;
 
