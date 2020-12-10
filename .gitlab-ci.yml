@@ -39,4 +39,4 @@ build:
 deploy:
  type: deploy
  script:
-   - ssh root@142.93.52.107 cd /atoute && ./deploy.sh && exit"
+   - ssh root@142.93.52.107 "cd /atoute && ./deploy.sh && exit"
