@@ -16,36 +16,35 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        web:
-            pattern: ^/(auth|reset-password|search)
+
+        api_login:
+            pattern: ^/auth/login
             anonymous: true
             lazy: true
+            json_login:
+                provider: app_user_provider
+                check_path: /auth/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - App\Security\WebAuthenticator
-            user_checker: App\Security\UserChecker
-            logout:
-                path: app_logout
+
+        api_register:
+            pattern: ^/(auth/register|reset-password)
+            stateless: true
+            anonymous: true
+
         api:
-            anonymous: lazy
-            lazy: true
             pattern: ^/
+            stateless: true
             guard:
                 authenticators:
-                    - App\Security\ApiAuthenticator
+                    - lexik_jwt_authentication.jwt_token_authenticator
         main:
             anonymous: true
 
     access_control:
-        - { path: ^/auth/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/offers, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
-        - { path: ^/resumes, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
-        - { path: ^/resumes/\d+$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
-        - { path: ^/offers/\d+$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: ["GET"] }
         - { path: ^/, roles: ROLE_USER }

@@ -24,7 +24,6 @@ class FixturesUtils
 
     public function generateParagraph(int $nbr = 5): string
     {
-        $paragraphs = $this->faker->paragraphs($nbr);
-        return '{"blocks":[{"key":"401uo","text":"'.implode($paragraphs).'","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';
+        return '<p>' . implode('</p><p>', $this->faker->paragraphs($nbr)) . '</p>';
     }
 }

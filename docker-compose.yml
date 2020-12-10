@@ -36,6 +36,16 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - '8088:80'
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.0.1
     environment:

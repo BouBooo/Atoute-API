@@ -8,7 +8,6 @@ use App\Entity\Offer;
 use App\Entity\Particular;
 use App\Entity\Resume;
 use App\Enum\EntityEnum;
-use App\Service\TokenGeneratorService;
 use App\Utils\FixturesUtils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -22,7 +21,6 @@ class AppFixtures extends Fixture
 
     private Generator $faker;
     private UserPasswordEncoderInterface $passwordEncoder;
-    private TokenGeneratorService $tokenGeneratorService;
     private FixturesUtils $fixturesUtils;
 
     private array $users = [];
@@ -32,12 +30,10 @@ class AppFixtures extends Fixture
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        TokenGeneratorService $tokenGeneratorService,
         FixturesUtils $fixturesUtils
     ) {
         $this->faker = Factory::create('fr_FR');
         $this->passwordEncoder = $passwordEncoder;
-        $this->tokenGeneratorService = $tokenGeneratorService;
         $this->fixturesUtils = $fixturesUtils;
     }
 
@@ -67,8 +63,6 @@ class AppFixtures extends Fixture
                     ->setFirstName($this->faker->firstName)
                     ->setLastName($this->faker->lastName);
             }
-
-            $this->tokenGeneratorService->generateAuthToken($user);
 
             $this->users[] = $user;
 

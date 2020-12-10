@@ -7,7 +7,6 @@ use App\Entity\Particular;
 use App\Entity\User;
 use App\Event\UserCreatedEvent;
 use App\Repository\UserRepository;
-use App\Service\AuthService;
 use App\Service\TokenGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -37,24 +36,6 @@ final class SecurityController extends BaseController
     }
 
     /**
-     * @Route("/login", name="login", methods={"POST"})
-     */
-    public function login(AuthService $authService): JsonResponse
-    {
-        $user = $authService->getUser();
-
-        return $this->respond('logged_successfully', [
-            'accessToken' => $user->getAccessToken(),
-            'refreshToken' => $user->getRefreshToken()
-        ]);
-    }
-
-    /**
-     * @Route("/logout", name="logout", methods={"POST"})
-     */
-    public function logout(): void {}
-
-    /**
      * @Route("/register", name="register", methods={"POST"})
      */
     public function register(
@@ -81,8 +62,6 @@ final class SecurityController extends BaseController
         $hash = $encoder->encodePassword($user, $user->getPassword());
         $user->setPassword($hash)
             ->setConfirmationToken($tokenGeneratorService->generate());
-
-        $tokenGeneratorService->generateAuthToken($user);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

@@ -40,24 +40,6 @@ abstract class User implements UserInterface, \Serializable
     protected string $password = '';
 
     /**
-     * @ORM\Column(type="string")
-     * @Groups({"private"})
-     */
-    protected string $accessToken = '';
-
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"private"})
-     */
-    protected string $refreshToken = '';
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"private"})
-     */
-    protected ?\DateTime $expirationDate = null;
-
-    /**
      * @ORM\Column(type="string", nullable=true)
      * @Groups({"private"})
      */
@@ -127,41 +109,6 @@ abstract class User implements UserInterface, \Serializable
     public function isParticular(): bool
     {
         return $this instanceof Particular;
-    }
-
-    public function getAccessToken(): string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): void
-    {
-        $this->accessToken = $accessToken;
-    }
-
-    public function getRefreshToken(): string
-    {
-        return $this->refreshToken;
-    }
-
-    public function setRefreshToken(string $refreshToken): void
-    {
-        $this->refreshToken = $refreshToken;
-    }
-
-    public function getExpirationDate(): \DateTime
-    {
-        return $this->expirationDate;
-    }
-
-    public function setExpirationDate(\DateTime $expirationDate): void
-    {
-        $this->expirationDate = $expirationDate;
-    }
-
-    public function tokenIsValid(\DateTime $dateTime): bool
-    {
-        return $this->expirationDate > $dateTime;
     }
 
     public function getResetPasswordToken(): ?string
