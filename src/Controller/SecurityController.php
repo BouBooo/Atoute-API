@@ -47,11 +47,15 @@ final class SecurityController extends BaseController
         $data = $this->testJson($request);
 
         if (!array_key_exists('email', $data) || !array_key_exists('password', $data) || !array_key_exists('role', $data)) {
-            throw new AuthenticationException('empty_credentials');
+            return $this->respondWithError('empty_credentials');
+        }
+
+        if (!in_array($data['role'], User::$roles, true)) {
+            return $this->respondWithError('role_doesnt_exists');
         }
 
         if ($this->userRepository->isAlreadyExists($data['email'])) {
-            throw new AuthenticationException('email_already_exists');
+            return $this->respondWithError('email_already_exists');
         }
 
         $userClass = Company::ROLE === $data['role'] ? Company::class : Particular::class;

@@ -18,6 +18,8 @@ abstract class User implements UserInterface, \Serializable
 {
     use TimestampableTrait;
 
+    public static array $roles = [Particular::ROLE, Company::ROLE];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
