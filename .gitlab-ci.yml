@@ -1,22 +1,22 @@
 #image: gitlab/dind
-#
-#stages:
+
+stages:
 #  - test
-#  - build
-#  - deploy
-#
-#before_script:
-#  # Setup SSH deploy keys
-#  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-#  - eval $(ssh-agent -s)
-#  - ssh-add <(echo "$PRIVATE_SSH_KEY")
-#  - mkdir -p ~/.ssh
-#  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-#  # Connection to Docker Hub
-#  - docker info
-#  - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
-#
-#test:
+ - build
+ - deploy
+
+before_script:
+ # Setup SSH deploy keys
+ - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+ - eval $(ssh-agent -s)
+ - ssh-add <(echo "$PRIVATE_SSH_KEY")
+ - mkdir -p ~/.ssh
+ - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+ # Connection to Docker Hub
+ - docker info
+ - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
+
+# test:
 #  type: test
 #  image: php:7.4-fpm
 #  before_script:
@@ -29,14 +29,14 @@
 #    - cp .env.test.dist .env.test
 #    - docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
 #    - php bin/phpunit
-#
-#build:
-#  type: build
-#  script:
-#    - docker build -f Dockerfile-prod -t registry.gitlab.com/quentg/atoute-back/api .
-#    - docker push registry.gitlab.com/quentg/atoute-back/api
-#
-#deploy:
-#  type: deploy
-#  script:
-#    - ssh root@206.189.201.153 "/atoute/back/deploy.sh && exit"
+
+build:
+ type: build
+ script:
+   - docker build -f Dockerfile-prod -t registry.gitlab.com/quentg/atoute-back/api .
+   - docker push registry.gitlab.com/quentg/atoute-back/api
+
+deploy:
+ type: deploy
+ script:
+   - ssh root@142.93.52.107 "/atoute/deploy.sh && exit"
