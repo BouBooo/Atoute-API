@@ -29,7 +29,7 @@ security:
             provider: app_user_provider
 
         api_register:
-            pattern: ^/(auth/register|reset-password)
+            pattern: ^/(auth/register|reset-password|doc)
             stateless: true
             anonymous: true
 
@@ -43,6 +43,7 @@ security:
             anonymous: true
 
     access_control:
+        - { path: ^/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }

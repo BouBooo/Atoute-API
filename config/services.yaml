@@ -22,10 +22,6 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    App\Security\ApiAuthenticator:
-        arguments:
-            $headerAuthToken: '%env(HEADER_AUTH_TOKEN)%'
-
     App\EventListener\EntityListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
