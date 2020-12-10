@@ -35,6 +35,11 @@ services:
               event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
               dispatcher: security.event_dispatcher.api
 
+    gesdinet.jwtrefreshtoken.refresh_token_manager:
+        class: App\Doctrine\RefreshTokenManager
+        public: true
+        arguments: [ '@gesdinet.jwtrefreshtoken.object_manager', '%gesdinet.jwtrefreshtoken.refresh_token.class%' ]
+
     App\Service\MailerService:
         arguments:
             $from: '%env(MAILER_FROM)%'

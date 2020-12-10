@@ -30,7 +30,7 @@ security:
             user_checker: App\Security\UserChecker
 
         api_register:
-            pattern: ^/(auth/register|reset-password|doc)
+            pattern: ^/(auth/register|reset-password|doc|token/refresh)
             stateless: true
             anonymous: true
 
@@ -46,6 +46,7 @@ security:
 
     access_control:
         - { path: ^/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }

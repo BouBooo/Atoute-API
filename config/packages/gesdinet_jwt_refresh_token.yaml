@@ -1,0 +1,3 @@
+gesdinet_jwt_refresh_token:
+  ttl_update: true
+  single_use: true
