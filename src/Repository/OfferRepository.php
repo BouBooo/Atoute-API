@@ -41,7 +41,10 @@ class OfferRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPublish(?int $limit = null)
+/**
+ * Return Query
+ */
+    public function getPublishQuery(?int $limit = null)
     {
         return $this->createQueryBuilder('o')
             ->where('o.status = :status')

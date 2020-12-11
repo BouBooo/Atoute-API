@@ -7,6 +7,7 @@ use App\Form\OfferType;
 use App\Service\AuthService;
 use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -76,13 +77,19 @@ final class OfferController extends BaseController
     /**
      * @Route("", name="all", methods={"GET"})
      */
-    public function all(Request $request): JsonResponse
+    public function all(Request $request, PaginatorInterface $paginator): JsonResponse
     {
-        $limit = (int) $request->query->get('l') !== 0
-            ? (int) $request->query->get('l') : null;
+        $limit = (int) $request->query->get('l') !== 0 ? (int) $request->query->get('l') : null;
+        $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : null;
+
+        $pagination = $paginator->paginate(
+            $this->offerRepository->getPublishQuery($limit), // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            $offerPerPage// Nombre de résultats par page
+        );
 
         $json = $this->serializer->serialize(
-            $this->offerRepository->getPublish($limit),
+            $pagination,
             'json',
             ['groups' => 'offer_read']
         );
