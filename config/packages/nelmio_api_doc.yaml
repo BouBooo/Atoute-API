@@ -1,17 +1,29 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Atoute 👋
+            description: Atoute API
             version: 1.0.0
+        tags:
+            - name: "Authentication"
+              description: "Authentication related endpoints"
+            - name: "User"
+              description: "User related endpoints"
+            - name: "Offer"
+              description: "Offer related endpoints"
+            - name: "Resume"
+              description: "Resume related endpoints"
+            - name: "Application"
+              description: "Application related endpoints"
         components:
             securitySchemes:
                 Bearer:
                     type: http
+                    description: 'Value: {JWT}'
                     scheme: bearer
                     bearerFormat: JWT
         security:
             - Bearer: []
     areas: # To filter documented areas
         path_patterns:
-            - ^(?!/doc$) # Accepts routes under / except /doc
+            - ^/(?!doc|_(profiler|error|wdt)|$)
