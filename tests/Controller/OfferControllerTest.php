@@ -2,9 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\BaseController;
 use App\Entity\Offer;
 use App\Tests\ApiTestCase;
+use App\Enum\ApiResponseEnum;
+use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OfferControllerTest extends ApiTestCase 
@@ -15,41 +16,27 @@ class OfferControllerTest extends ApiTestCase
             self::DIR_FIXTURES . 'Company.yaml',
         ]);
 
-        $offer = [
-            'title' => "Offer title",
-            'description' => 'Offer description',
-            'start_at' => null,
-            'end_at' => null,
-            'city' => 'Bordeaux',
-            'postal_code' => '33000',
-            'salary' => null,
-            'type' => 'Offer type',
-            'activity' => 'Offer activity',
-            'status' => Offer::DRAFT
-        ];
+        $offer = $this->createOffer();
 
-        $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
+        $token = $this->getBearerToken($owner->getEmail());
+
+        $this->jsonRequest('POST', '/offers', $offer, $token);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
     }
 
+    
     public function testCreateOfferWithValidationErrors(): void
     {
         ['company1' => $owner] = $this->loadFixtureFiles([
             self::DIR_FIXTURES . 'Company.yaml',
         ]);
 
-        $offer = [
-            'title' => "",
-            'description' => 'Offer description',
-            'city' => 'Bordeaux',
-            'postal_code' => '33000',
-            'type' => 'Offer type',
-            'activity' => "Activity",
-            'status' => Offer::DRAFT
-        ];
+        $offer = $this->createOffer(true);
 
-        $this->jsonRequest('POST', '/offers', $offer, $owner->getAccessToken());
+        $token = $this->getBearerToken($owner->getEmail());
+
+        $this->jsonRequest('POST', '/offers', $offer, $token);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
     }
@@ -60,7 +47,9 @@ class OfferControllerTest extends ApiTestCase
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
-        $this->jsonRequest('GET', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
+        $token = $this->getBearerToken($offer->getOwner()->getEmail());
+
+        $this->jsonRequest('GET', '/offers/' . $offer->getId(), [], $token);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
     }
@@ -71,23 +60,25 @@ class OfferControllerTest extends ApiTestCase
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
-        $response = $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $offer->getOwner()->getAccessToken());
+        $token = $this->getBearerToken($offer->getOwner()->getEmail());
+
+        $response = $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $token);
         
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'offer_removed');
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::OFFER_DELETE);
     }
 
     public function testDeleteOfferWithBadOwner(): void
     {
-        ['offer1' => $offer] = $this->loadFixtureFiles([
+        ['offer1' => $offer, 'offer5' => $offer5] = $this->loadFixtureFiles([
             self::DIR_FIXTURES . 'Entities.yaml',
         ]);
 
-        $badToken = self::BASE_TOKEN . '9';
+        $badToken = $this->getBearerToken($offer5->getOwner()->getEmail());
 
         $response = $this->jsonRequest('DELETE', '/offers/' . $offer->getId(), [], $badToken);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
-        $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'bad_offer_owner');
+        $this->assertJsonEqualsToJson($response, BaseController::ERROR, ApiResponseEnum::OFFER_BAD_OWNER);
     }
 }

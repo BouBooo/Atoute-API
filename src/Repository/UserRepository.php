@@ -48,4 +48,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return null !== $user;
     }
+
+    public function getRandomVerifiedUser()
+    {
+        return  $this->createQueryBuilder('u')
+            ->where('u.isVerified = :verified')
+            ->setParameter('verified', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
 }

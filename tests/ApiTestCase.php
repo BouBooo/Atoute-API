@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Offer;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -17,7 +18,13 @@ class ApiTestCase extends WebTestCase
 
     protected function setUp(): void
     {
+        self::ensureKernelShutdown();
         $this->client = static::createClient();
+    }
+
+    public function getBearerToken(string $email)
+    {
+        return self::$container->get('lexik_jwt_authentication.encoder')->encode(['username' => $email]);
     }
 
     public function jsonRequest(string $method, string $url, ?array $data = null, ?string $token = null): string
@@ -25,7 +32,7 @@ class ApiTestCase extends WebTestCase
         $headers = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'HTTP_X_ATOUTE_AUTH_TOKEN' => $token
+            'HTTP_Authorization' => 'Bearer '.$token
         ];
 
         $this->client->request($method, $url, [], [], $headers, $data ? json_encode($data) : null);
@@ -71,5 +78,35 @@ class ApiTestCase extends WebTestCase
             'companyName' => 'The company',
             'is_verified' => $isVerified
         ]);
+    }
+
+    protected function createOffer($withErrors = false)
+    {
+        return [
+            'title' => $withErrors ? '' : "Offer title",
+            'description' => 'Offer description',
+            'start_at' => null,
+            'end_at' => null,
+            'city' => 'Bordeaux',
+            'postal_code' => '33000',
+            'salary' => null,
+            'type' => 'Offer type',
+            'activity' => 'Offer activity',
+            'status' => Offer::DRAFT
+        ];
+    }
+
+    protected function createApplication($offerId, $resumeId)
+    {
+        return [
+            'offerId' => $offerId,
+            'message' => 'Voici ma candidature',
+            'resumeId' => $resumeId,
+        ];
+    }
+
+    protected function generateRandomEmail()
+    {
+        return 'unit_test@' . md5(microtime()) . '.com';
     }
 }

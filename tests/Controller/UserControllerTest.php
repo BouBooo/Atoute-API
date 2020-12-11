@@ -2,33 +2,35 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\BaseController;
+use App\Entity\Company;
+use App\Entity\Particular;
 use App\Tests\ApiTestCase;
+use App\Controller\BaseController;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserControllerTest extends ApiTestCase 
 {
-    public function testGetCompany(): void
+    public function testGetCorrectUser(): void
     {
-        ['company1' => $company] = $this->loadFixtureFiles([
-            self::DIR_FIXTURES . 'Company.yaml',
-        ]);
+        $userRepository = static::$container->get(UserRepository::class);
+        $testUser = $userRepository->getRandomVerifiedUser();
 
-        $this->jsonRequest('GET', '/user', [], $company->getAccessToken());
+        $token = $this->getBearerToken($testUser->getEmail());
+
+        $response = $this->jsonRequest('GET', '/user', [], $token);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertEquals('company', $company->getRole());
-    }
 
-    public function testGetParticular(): void
-    {
-        ['particular1' => $particular] = $this->loadFixtureFiles([
-            self::DIR_FIXTURES . 'Particular.yaml',
-        ]);
+        if($testUser->isCompany()) {
+            $this->assertEquals(Company::ROLE, $testUser->getRole());
+        }
 
-        $this->jsonRequest('GET', '/user', [], $particular->getAccessToken());
+        if($testUser->isParticular()) {
+             $this->assertEquals(Particular::ROLE, $testUser->getRole()); 
+        }       
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertEquals('particular', $particular->getRole());
+        $this->assertJson($response);
     }
 }

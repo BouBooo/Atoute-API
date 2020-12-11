@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Tests\ApiTestCase;
+use App\Enum\ApiResponseEnum;
 use App\Controller\BaseController;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,12 +11,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SecurityControllerTest extends ApiTestCase
 {
     private const PASSWORD = "password";
-    private const JWT_INVALID_CREDENTIALS = "Bad credentials.";
-    private const AUTH_NOT_VERIFIED = "user_not_verified";
 
     public function testParticularRegister(): void
     {
-        $email = 'unit_test@' . md5(microtime()) . '.com';
+        $email = $this->generateRandomEmail();
         $response = $this->jsonRequest('POST', '/auth/register', [
             'email' => $email,
             'password' => self::PASSWORD,
@@ -25,12 +24,12 @@ class SecurityControllerTest extends ApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'registered_successfully');
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::USER_REGISTERED);
     }
 
     public function testCompanyRegister(): void
     {
-        $email = 'unit_test@' . md5(microtime()) . '.com';
+        $email = $this->generateRandomEmail();
         $response = $this->jsonRequest('POST', '/auth/register', [
             'email' => $email,
             'password' => self::PASSWORD,
@@ -39,7 +38,7 @@ class SecurityControllerTest extends ApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'registered_successfully');
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::USER_REGISTERED);
     }
 
     
@@ -51,12 +50,12 @@ class SecurityControllerTest extends ApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(401);
-        $this->assertJsonEqualsToJsonJwt($response, 401, self::JWT_INVALID_CREDENTIALS);
+        $this->assertJsonEqualsToJsonJwt($response, 401, ApiResponseEnum::INVALID_CREDENTIALS);
     }
 
     public function testUserLoginWhenIsNotVerified(): void
     {
-        $email = 'unit_test@' . md5(microtime()) . '.com';
+        $email = $this->generateRandomEmail();
 
         $this->createUser($email, self::PASSWORD);
 
@@ -66,12 +65,12 @@ class SecurityControllerTest extends ApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(401);
-        $this->assertJsonEqualsToJsonJwt($response, 401, self::AUTH_NOT_VERIFIED);
+        $this->assertJsonEqualsToJsonJwt($response, 401, ApiResponseEnum::USER_NOT_VERIFIED);
     }
 
     public function testUserLoginWithGoodCredentials(): void
     {
-        $email = 'unit_test@' . md5(microtime()) . '.com';
+        $email = $this->generateRandomEmail();
 
         $registration = $this->createUser($email, self::PASSWORD, true);
 
