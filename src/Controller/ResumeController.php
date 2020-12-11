@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Resume;
 use App\Form\ResumeType;
+use App\Security\Voter\ResumeVoter;
 use App\Uploader\Uploader;
 use App\Service\AuthService;
 use App\Repository\ResumeRepository;
@@ -48,7 +49,7 @@ final class ResumeController extends BaseController
     {
         $data = $request->request->all();
 
-        if ($this->authService->getUser()->isCompany()) {
+        if (!$this->isGranted(ResumeVoter::CREATE)) {
             return $this->respondWithError('company_can_create_resume');
         }
 
@@ -100,11 +101,11 @@ final class ResumeController extends BaseController
             return $this->respondWithError($resume);
         }
 
-        $data = $request->request->all();
-
-        if ($this->authService->getUser()->isCompany()) {
+        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
             return $this->respondWithError('company_can_create_resume');
         }
+
+        $data = $request->request->all();
 
         $form = $this->formFactory->create(ResumeType::class, $resume, [
             'cv' => $request->files->get('cv')
@@ -152,6 +153,10 @@ final class ResumeController extends BaseController
             return $this->respondWithError($resume);
         }
 
+        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
+            return $this->respondWithError('not_resume_owner');
+        }
+
         $this->uploader->remove($resume->getCv());
 
         $this->entityManager->remove($resume);
@@ -163,14 +168,10 @@ final class ResumeController extends BaseController
     /**
      * @return Resume|string
      */
-    private function getAndVerifyResume(int $id, bool $verifyOwner = true)
+    private function getAndVerifyResume(int $id)
     {
         if (!$resume = $this->resumeRepository->find($id)) {
             return 'resume_not_found';
-        }
-
-        if ($verifyOwner && !$resume->isOwner($this->authService->getUser())) {
-            return 'bad_resume_owner';
         }
 
         return $resume;

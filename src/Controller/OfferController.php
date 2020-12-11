@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Offer;
 use App\Form\OfferType;
-use App\Service\AuthService;
+use App\Security\Voter\OfferVoter;
 use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,19 +22,16 @@ final class OfferController extends BaseController
     private EntityManagerInterface $entityManager;
     private FormFactoryInterface $formFactory;
     private OfferRepository $offerRepository;
-    private AuthService $authService;
 
     public function __construct(
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
-        FormFactoryInterface $formFactory,
-        AuthService $authService
+        FormFactoryInterface $formFactory
     ) {
         $this->serializer = $serializer;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
         $this->offerRepository = $entityManager->getRepository(Offer::class);
-        $this->authService = $authService;
     }
 
     /**
@@ -44,7 +41,7 @@ final class OfferController extends BaseController
     {
         $data = $this->testJson($request);
 
-        if ($this->authService->getUser()->isParticular()) {
+        if (!$this->isGranted(OfferVoter::CREATE)) {
             return $this->respondWithError('only_companies_can_create_offer');
         }
 
@@ -95,7 +92,11 @@ final class OfferController extends BaseController
      */
     public function index(int $id): JsonResponse
     {
-        $offer = $this->getAndVerifyOffer($id, false);
+        $offer = $this->getAndVerifyOffer($id);
+
+        if (!$offer instanceof Offer) {
+            return $this->respondWithError($offer);
+        }
 
         $json = $this->serializer->serialize(
             $offer,
@@ -115,6 +116,10 @@ final class OfferController extends BaseController
 
         if (!$offer instanceof Offer) {
             return $this->respondWithError($offer);
+        }
+
+        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+            return $this->respondWithError('only_companies_can_create_offer');
         }
 
         $data = $this->testJson($request);
@@ -146,6 +151,10 @@ final class OfferController extends BaseController
             return $this->respondWithError($offer);
         }
 
+        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+            return $this->respondWithError('not_offer_owner');
+        }
+
         $this->entityManager->remove($offer);
         $this->entityManager->flush();
 
@@ -163,6 +172,10 @@ final class OfferController extends BaseController
             return $this->respondWithError($offer);
         }
 
+        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+            return $this->respondWithError('not_offer_owner');
+        }
+
         $applications = [];
         foreach ($offer->getApplicationsToBeProcessed() as $application) {
             $applications[] = json_decode($this->serializer->serialize($application, 'json', ['groups' => 'application_offer_read']));
@@ -174,14 +187,10 @@ final class OfferController extends BaseController
     /**
      * @return Offer|string
      */
-    private function getAndVerifyOffer(int $id, bool $verifyOwner = true)
+    private function getAndVerifyOffer(int $id)
     {
         if (!$offer = $this->offerRepository->find($id)) {
             return 'offer_not_found';
-        }
-
-        if ($verifyOwner && !$offer->isOwner($this->authService->getUser())) {
-            return 'bad_offer_owner';
         }
 
         return $offer;

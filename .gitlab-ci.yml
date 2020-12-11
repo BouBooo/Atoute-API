@@ -32,11 +32,15 @@ before_script:
 
 build:
  type: build
+ only:
+   - master
  script:
    - docker build -f Dockerfile-prod -t registry.gitlab.com/quentg/atoute-back/api .
    - docker push registry.gitlab.com/quentg/atoute-back/api
 
 deploy:
  type: deploy
+ only:
+   - master
  script:
    - ssh root@142.93.52.107 "cd /atoute && ./deploy.sh && exit"
