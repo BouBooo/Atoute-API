@@ -28,9 +28,8 @@ class Company extends User
     private string $companyName = '';
 
     /**
-     * @ORM\OneToMany(targetEntity=Offer::class, mappedBy="owner", orphanRemoval=true)
-     *
      * @var Collection&iterable<Offer>
+     * @ORM\OneToMany(targetEntity=Offer::class, mappedBy="owner", orphanRemoval=true)
      */
     private Collection $offers;
 
@@ -61,9 +60,6 @@ class Company extends User
         return $this;
     }
 
-    /**
-     * @return Collection|Offer[]
-     */
     public function getOffers(): Collection
     {
         return $this->offers;

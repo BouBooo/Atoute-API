@@ -9,6 +9,8 @@ use App\Event\ApplicationStatusUpdatedEvent;
 use App\Repository\ApplicationRepository;
 use App\Repository\OfferRepository;
 use App\Repository\ResumeRepository;
+use App\Security\Voter\ApplicationVoter;
+use App\Security\Voter\ResumeVoter;
 use App\Service\AuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -61,7 +63,7 @@ final class ApplicationController extends BaseController
 
         $user = $this->authService->getUser();
 
-        if ($user->isCompany()) {
+        if (!$this->isGranted(ApplicationVoter::CREATE)) {
             return $this->respondWithError('company_cant_applied');
         }
 
@@ -69,7 +71,7 @@ final class ApplicationController extends BaseController
             return $this->respondWithError('resume_not_found');
         }
 
-        if ($resume->getOwner()->getId() !== $user->getId()) {
+        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
             return $this->respondWithError('not_your_resume');
         }
 
@@ -131,9 +133,13 @@ final class ApplicationController extends BaseController
             return $this->respondWithError('bad_keys');
         }
 
+        if (!$this->isGranted(ApplicationVoter::EDIT, $application)) {
+            return $this->respondWithError('bad_offer_owner');
+        }
+
         $status = $data['status'];
 
-        if (!in_array($status, Application::$updatedStatus)) {
+        if (!in_array($status, Application::$updatedStatus, true)) {
             return $this->respondWithError('not_available_status');
         }
 
@@ -154,9 +160,11 @@ final class ApplicationController extends BaseController
             return $this->respondWithError('application_not_found');
         }
 
-        $user = $this->authService->getUser();
+        if (!$this->isGranted(ApplicationVoter::EDIT, $application)) {
+            return $this->respondWithError('bad_offer_owner');
+        }
 
-        if ($user->isCompany() || !$application->isOwner($user->getId())) {
+        if (!$this->isGranted(ApplicationVoter::VIEW, $application)) {
             return $this->respondWithError("bad_application_owner");
         }
 
