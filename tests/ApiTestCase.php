@@ -44,11 +44,32 @@ class ApiTestCase extends WebTestCase
         $this->assertJsonStringEqualsJsonString($response, json_encode($json));
     }
 
+    public function assertJsonEqualsToJsonJwt(string $response, int $code, string $message): void
+    {
+        $json = [
+            'code' => $code,
+            'message' => $message
+        ];
+
+        $this->assertJsonStringEqualsJsonString($response, json_encode($json));
+    }
+
     protected function assertHasValidationErrors(object $entity, int $number = 0): void
     {
         self::bootKernel();
         $errors = self::$container->get('validator')->validate($entity);
         $this->assertCount($number, $errors);
         self::tearDown(); // To handle multiple asserts in a row
+    }
+
+    protected function createUser(string $email, string $password, bool $isVerified = false)
+    {
+        return $this->jsonRequest('POST', '/auth/register', [
+            'email' => $email,
+            'password' => 'password',
+            'role' => 'particular',
+            'companyName' => 'The company',
+            'is_verified' => $isVerified
+        ]);
     }
 }
