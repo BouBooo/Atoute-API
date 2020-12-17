@@ -44,19 +44,22 @@ class OfferRepository extends ServiceEntityRepository
 /**
  * Return Query
  */
-    public function getPublishQuery(?int $limit = null, ?string $type = null)
+    public function getPublishQuery(?int $limit = null, ?string $type)
     {
-        return $this->createQueryBuilder('o')
-            ->where('o.status = :status')
-            ->andwhere('o.type = :type')
-            ->orderBy('o.publishedAt', 'DESC')
-            ->setParameters([
-                'status' => Offer::PUBLISHED,
-                'type' => $type
-            ])
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult()
-        ;
+
+        $qb = $this->createQueryBuilder('o')
+            ->where('o.status = :status');
+
+        if (null !== $type) {
+            $qb->andWhere('o.type = :type')
+            ->setParameter('type', $type);
+        }
+
+        $qb->orderBy('o.publishedAt', 'DESC')
+        ->setParameter('status', Offer::PUBLISHED)
+        ->setMaxResults($limit);
+
+        return $qb->getQuery()
+        ->getResult();
     }
 }
