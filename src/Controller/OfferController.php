@@ -78,10 +78,17 @@ final class OfferController extends BaseController
     {
         $limit = (int) $request->query->get('l') !== 0 ? (int) $request->query->get('l') : null;
         $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : null;
+
+        // Filter values
         $type = (string) $request->query->get('type') !== "" ? (string) $request->query->get('type') : null;
+        $activity = (string) $request->query->get('activity') !== "" ? (string) $request->query->get('activity') : null;
+        // Filters array
+        $filters = array();
+        $filters["type"] = $type;
+        $filters["activity"] = $activity;
 
         $pagination = $paginator->paginate(
-            $this->offerRepository->getPublishQuery($limit, $type), // Requête contenant les données à paginer (ici nos articles)
+            $this->offerRepository->getPublishQuery($limit, $filters), // Requête contenant les données à paginer (ici nos articles)
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
             $offerPerPage// Nombre de résultats par page
         );
