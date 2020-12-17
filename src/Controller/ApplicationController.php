@@ -71,7 +71,7 @@ final class ApplicationController extends BaseController
             return $this->respondWithError('resume_not_found');
         }
 
-        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
+        if (!$resume->isOwner($user)) {
             return $this->respondWithError('not_your_resume');
         }
 

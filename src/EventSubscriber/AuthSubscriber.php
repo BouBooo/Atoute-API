@@ -33,13 +33,13 @@ class AuthSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        $this->busInterface->dispatch(New UserCreatedMessage($user->getId()));
+        $this->busInterface->dispatch(new UserCreatedMessage($user->getId()));
     }
 
     public function onResetPassword(ResetPasswordEvent $event): void
     {
         $user = $event->getUser();
 
-        $this->busInterface->dispatch(New ResetPasswordMessage($user->getId()));
+        $this->busInterface->dispatch(new ResetPasswordMessage($user->getId()));
     }
 }

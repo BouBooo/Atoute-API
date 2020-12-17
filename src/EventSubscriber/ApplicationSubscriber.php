@@ -3,18 +3,22 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Application;
+use App\Service\MailerService;
 use App\Event\ApplicationCreatedEvent;
 use App\Event\ApplicationStatusUpdatedEvent;
-use App\Service\MailerService;
+use App\Queue\Message\ApplicationCreatedMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ApplicationSubscriber implements EventSubscriberInterface
 {
     private MailerService $mailer;
+    private MessageBusInterface $busInterface;
 
-    public function __construct(MailerService $mailer)
+    public function __construct(MailerService $mailer, MessageBusInterface $busInterface)
     {
         $this->mailer = $mailer;
+        $this->busInterface = $busInterface;
     }
 
     public static function getSubscribedEvents(): array
@@ -30,21 +34,7 @@ class ApplicationSubscriber implements EventSubscriberInterface
         $offerOwner = $event->getOfferOwner();
         $application = $event->getApplication();
 
-        $emailCompany = $this->mailer->buildEmail($offerOwner->getEmail(), 'applications/create.html.twig', [
-            'offer' => $application->getOffer(),
-            'application' => $application,
-            'isParticular' => false
-        ]);
-
-        $this->mailer->send($emailCompany);
-
-        $emailPart = $this->mailer->buildEmail($application->getCandidate()->getEmail(), 'applications/create.html.twig', [
-            'offer' => $application->getOffer(),
-            'application' => $application,
-            'isParticular' => true
-        ]);
-
-        $this->mailer->send($emailPart);
+        $this->busInterface->dispatch(new ApplicationCreatedMessage($offerOwner->getId(), $application->getId()));
     }
 
     public function onStatusUpdated(ApplicationStatusUpdatedEvent $event): void

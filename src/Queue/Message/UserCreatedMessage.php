@@ -19,6 +19,6 @@ class UserCreatedMessage
 
     public function getTemplate(): string 
     {
-        return $this->template;
+        return $this->template; 
     }
 }
