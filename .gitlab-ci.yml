@@ -1,7 +1,7 @@
 image: gitlab/dind
 
 stages:
-#  - test
+ - test
  - build
  - deploy
 
@@ -16,19 +16,29 @@ before_script:
  - docker info
  - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
 
-# test:
-#  type: test
-#  image: php:7.4-fpm
-#  before_script:
-#    - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
-#    - apt install docker.io -y && service docker start
-#    - curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-#    - composer install
-#  script:
-#    - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
-#    - cp .env.test.dist .env.test
-#    - docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
-#    - php bin/phpunit
+test:
+ type: test
+ image: php:7.4-fpm
+ before_script:
+   - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
+   - apt install docker.io -y && service docker start
+   - curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+   - composer install
+ script:
+   - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
+   - cp .env.test.dist .env.test
+   - docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+   - php bin/phpunit
+
+coverage:
+  type: test
+  only:
+    - master
+  image: ciricihq/gitlab-sonar-scanner
+  variables:
+    SONAR_URL: $SONAR_URL
+  script:
+    - gitlab-sonar-scanner -Dsonar.projectKey=atoute-api -Dsonar.sources=.
 
 build:
  type: build
