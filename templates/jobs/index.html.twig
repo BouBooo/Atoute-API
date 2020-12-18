@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <h2 class="text-center my-5">Failed jobs</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Job</th>
+            <th scope="col">Bus</th>
+            <th scope="col">Delivery mode</th>
+            <th scope="col">Retries</th>
+            <th scope="col">FailedAt</th>
+            <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <th scope="row">{{ job.getId }}</th>
+                <td>{{ job.getJob }}</td>
+                <td>{{ job.getBusName }}</td>
+                <td>{{ job.getDeliveryMethod }}</td>
+                <td>{{ job.getRetryCount }}</td>
+                <td>{{ job.getFailedAt }}</td>
+                <td>
+                    <a href="#" class="btn btn-success">Retry</a>
+                    <a href="#" class="btn btn-danger">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> 
+</div>
+{% endblock %}
