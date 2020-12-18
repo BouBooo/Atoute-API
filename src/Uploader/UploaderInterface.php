@@ -12,4 +12,9 @@ interface UploaderInterface
      * @return string
      */
     public function upload(UploadedFile $file): string;
+
+    /**
+     * @param string $path
+     */
+    public function remove(string $path): void;
 }

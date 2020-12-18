@@ -12,8 +12,14 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.7",
         "fzaninotto/faker": "^1.9",
+        "gesdinet/jwt-refresh-token-bundle": "^0.9.1",
+        "knplabs/knp-paginator-bundle": "^5.4",
+        "lexik/jwt-authentication-bundle": "^2.10",
+        "nelmio/api-doc-bundle": "^4.0",
         "nelmio/cors-bundle": "^2.1",
+        "php-http/message": "^1.10",
         "phpdocumentor/reflection-docblock": "^5.2",
+        "ruflin/elastica": "^7.0",
         "sensio/framework-extra-bundle": "^5.1",
         "sentry/sentry-symfony": "^3.5",
         "symfony/apache-pack": "^1.0",
@@ -27,6 +33,7 @@
         "symfony/http-client": "5.1.*",
         "symfony/intl": "5.1.*",
         "symfony/mailer": "5.1.*",
+        "symfony/messenger": "5.1.*",
         "symfony/mime": "5.1.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.1.*",
@@ -107,7 +114,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "5.1.*"
         }
     }

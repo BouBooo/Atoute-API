@@ -2,12 +2,19 @@
 
 namespace App\Twig;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
+    private RequestStack $requestStack;
+
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -15,8 +22,10 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function getUrl(Request $request): string
+    public function getUrl(): string
     {
+        $request = $this->requestStack->getCurrentRequest();
+
         return $request->getScheme() . '://' . $request->getHost();
     }
 }

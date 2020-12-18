@@ -60,6 +60,6 @@ class AuthService
     {
         $request = $request ?: new Request();
         $this->eventDispatcher->dispatch(new LogoutEvent($request, $this->tokenStorage->getToken()));
-        $this->tokenStorage->setToken(null);
+        $this->tokenStorage->setToken();
     }
 }

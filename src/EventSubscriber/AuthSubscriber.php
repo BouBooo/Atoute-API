@@ -2,18 +2,23 @@
 
 namespace App\EventSubscriber;
 
-use App\Event\ResetPasswordEvent;
-use App\Event\UserCreatedEvent;
 use App\Service\MailerService;
+use App\Event\UserCreatedEvent;
+use App\Event\ResetPasswordEvent;
+use App\Queue\Message\UserCreatedMessage;
+use App\Queue\Message\ResetPasswordMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class AuthSubscriber implements EventSubscriberInterface
 {
     private MailerService $mailer;
+    private MessageBusInterface $busInterface;
 
-    public function __construct(MailerService $mailer)
+    public function __construct(MailerService $mailer, MessageBusInterface $busInterface)
     {
         $this->mailer = $mailer;
+        $this->busInterface = $busInterface;
     }
 
     public static function getSubscribedEvents(): array
@@ -28,23 +33,13 @@ class AuthSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        $email = $this->mailer->buildEmail($user->getEmail(), 'emails/confirm_account.html.twig', [
-            'id' => $user->getId(),
-            'token' => $user->getConfirmationToken()
-        ]);
-
-        $this->mailer->send($email);
+        $this->busInterface->dispatch(new UserCreatedMessage($user->getId()));
     }
 
     public function onResetPassword(ResetPasswordEvent $event): void
     {
         $user = $event->getUser();
 
-        $email = $this->mailer->buildEmail($user->getEmail(), 'emails/reset_password.html.twig', [
-            'id' => $user->getId(),
-            'token' => $user->getResetPasswordToken()
-        ]);
-
-        $this->mailer->send($email);
+        $this->busInterface->dispatch(new ResetPasswordMessage($user->getId()));
     }
 }

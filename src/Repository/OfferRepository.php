@@ -40,4 +40,37 @@ class OfferRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+/**
+ * Return Query
+ */
+    public function getPublishQuery(?int $limit = null, ?array $filters = null)
+    {
+
+        $qb = $this->createQueryBuilder('o')
+            ->where('o.status = :status');
+
+
+        foreach($filters as $f => $v) {
+            if (null !== $v) {
+                $qb->andWhere('o.'.$f.' = :'.$f)
+                ->setParameter($f, $v);
+            }
+        }
+        // if (null !== $type) {
+        //     $qb->andWhere('o.type = :type')
+        //     ->setParameter('type', $type);
+        // }
+        // if (null !== $type) {
+        //     $qb->andWhere('o.activity = :activity')
+        //     ->setParameter('activity', $activity);
+        // }
+
+        $qb->orderBy('o.publishedAt', 'DESC')
+        ->setParameter('status', Offer::PUBLISHED)
+        ->setMaxResults($limit);
+
+        return $qb->getQuery()
+        ->getResult();
+    }
 }

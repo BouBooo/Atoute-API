@@ -34,9 +34,22 @@ stop: ## Stop les container docker
 .PHONY: seed
 seed: vendor/autoload.php ## Génère des données dans la base de données (docker-compose up doit être lancé)
 	$(sy) doctrine:database:create --if-not-exists
+	$(sy) doctrine:schema:drop -f
 	$(sy) doctrine:schema:update -f
 	$(sy) doctrine:fixtures:load -n
 
-.PHONY: clear ## Vide le cache
-clear: vendor/autoload.php
+.PHONY: reindex ## Reindex elasticsearch schema
+reindex: vendor/autoload.php
+	$(sy) elastic:reindex
+
+.PHONY: cc
+cc: vendor/autoload.php ## Vide le cache
 	$(sy) cache:clear
+
+.PHONY: elastic
+elastic: ## Permet de rentrer dans le container ElasticSearch
+	$(de) elasticsearch bash
+
+.PHONY: kibana
+kibana: ## Permet de rentrer dans le container kibana
+	$(de) kibana bash

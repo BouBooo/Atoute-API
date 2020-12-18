@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mise à jour sur l'une de vos candidatures{% endblock %}
+
+{% block main_content %}
+    Une mise à jour vient d'être effectuée pour votre candidature à l'offre {{ offer.title }}
+
+    <h4>Réponse de l'entreprise {{ companyName }} : <strong>{{ isAccepted ? "Accepté !" : "Refusé :(" }}</strong></h4>
+
+    <h4>Message {{ isAccepted ? "" : "de refus" }} :</h4>
+    {{ message|raw }}
+{% endblock %}

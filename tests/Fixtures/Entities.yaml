@@ -1,0 +1,39 @@
+App\Entity\Company:
+    company{1..10}:
+        email: company<current()>\@domain.com
+        password: \$argon2id\$v=19\$m=65536,t=4,p=1\$QPSsWoeFqm3FhbOO7MwGVA\$EfbAVFy4vf1efG9dmVLyY3cKyuCY9BL9vtX3MUAbaqE
+        is_verified: true
+        companyName: "company<current()>"
+
+App\Entity\Offer:
+    offer{1..10}:
+        title: 'offerTitle<current()>'
+        description: '<paragraph(4)>'
+        city: '<city()>'
+        owner: '@company<numberBetween(1,10)>'
+        start_at: <dateTimeThisMonth()>
+        end_at: <dateTimeThisMonth()>
+
+App\Entity\Particular:
+    particular{1..10}:
+        email: particular<current()>\@domain.com
+        password: \$argon2id\$v=19\$m=65536,t=4,p=1\$QPSsWoeFqm3FhbOO7MwGVA\$EfbAVFy4vf1efG9dmVLyY3cKyuCY9BL9vtX3MUAbaqE
+        is_verified: true
+        firstname: <firstName()>
+        lastname: <lastName()>
+
+App\Entity\Resume:
+    resume{1..10}:
+        title: 'title<current()>'
+        cv: '<paragraph(1)>'
+        contractType: 'contract<current()>'
+        activityArea: 'activityArea<current()>'
+        isPublic: true
+        owner: '@particular<numberBetween(1,10)>'
+
+App\Entity\Application:
+    application{1..20}:
+        offer: '@offer<numberBetween(1,10)>'
+        candidate: '@particular<numberBetween(1,10)>'
+        message: '<paragraph(1)>'
+        resume: '@resume<numberBetween(1,10)>'

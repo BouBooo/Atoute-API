@@ -2,72 +2,83 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\BaseController;
 use App\Tests\ApiTestCase;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Enum\ApiResponseEnum;
+use App\Controller\BaseController;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SecurityControllerTest extends ApiTestCase
 {
-    use FixturesTrait;
+    private const PASSWORD = "password";
 
     public function testParticularRegister(): void
     {
+        $email = $this->generateRandomEmail();
         $response = $this->jsonRequest('POST', '/auth/register', [
-            'email' => 'test@test.com',
-            'password' => 'password',
+            'email' => $email,
+            'password' => self::PASSWORD,
             'role' => 'particular',
             'firstName' => 'Particular',
             'lastName' => 'Part'
         ]);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'registered_successfully');
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::USER_REGISTERED);
     }
 
     public function testCompanyRegister(): void
     {
+        $email = $this->generateRandomEmail();
         $response = $this->jsonRequest('POST', '/auth/register', [
-            'email' => 'test1@test.com',
-            'password' => 'password',
+            'email' => $email,
+            'password' => self::PASSWORD,
             'role' => 'particular',
             'companyName' => 'The company'
         ]);
 
         $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'registered_successfully');
+        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::USER_REGISTERED);
     }
 
+    
     public function testUserLoginWithBadCredentials(): void
     {
         $response = $this->jsonRequest('POST', '/auth/login', [
-            'email' => 'aa@aa.com',
+            'username' => 'aa@aa.com',
             'password' => 'tess',
         ]);
 
-        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
-        $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'invalid_credentials');
+        $this->assertResponseStatusCodeSame(401);
+        $this->assertJsonEqualsToJsonJwt($response, 401, ApiResponseEnum::INVALID_CREDENTIALS);
     }
 
     public function testUserLoginWhenIsNotVerified(): void
     {
+        $email = $this->generateRandomEmail();
+
+        $this->createUser($email, self::PASSWORD);
+
         $response = $this->jsonRequest('POST', '/auth/login', [
-            'email' => 'test@test.com',
-            'password' => 'test',
+            'username' => $email,
+            'password' => self::PASSWORD,
         ]);
 
-        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_BAD_REQUEST);
-        $this->assertJsonEqualsToJson($response, BaseController::ERROR, 'user_not_verified');
+        $this->assertResponseStatusCodeSame(401);
+        $this->assertJsonEqualsToJsonJwt($response, 401, ApiResponseEnum::USER_NOT_VERIFIED);
     }
 
-//    public function testUserLoginWithGoodCredentials(): void
-//    {
-//        $response = $this->jsonRequest('POST', '/auth/login', [
-//            'email' => 'test@test.com',
-//            'password' => 'password',
-//        ]);
-//
-//        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-//        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, 'logged_successfully');
-//    }
+    public function testUserLoginWithGoodCredentials(): void
+    {
+        $email = $this->generateRandomEmail();
+
+        $registration = $this->createUser($email, self::PASSWORD, true);
+
+        $response = $this->jsonRequest('POST', '/auth/login', [
+            'username' => $email,
+            'password' => self::PASSWORD,
+        ]);
+
+        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
+    }
 }

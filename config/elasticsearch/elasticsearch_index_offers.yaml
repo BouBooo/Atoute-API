@@ -1,0 +1,23 @@
+settings:
+  index:
+    # Single node, no sharding
+    number_of_shards: 1
+    number_of_replicas: 0
+    refresh_interval: 1s
+
+mappings:
+  offer:
+    dynamic: false # Disable dynamic mapping
+    properties:
+      title: &fr_text
+        type: text
+        analyzer: french
+      description: *fr_text
+      city: *fr_text
+      postal_code: *fr_text
+      owner: *fr_text
+      activity: *fr_text
+      type: *fr_text
+      status: *fr_text
+      published_at:
+        type: date

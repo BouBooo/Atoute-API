@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une nouvelle candidature vient d'être effectuée{% endblock %}
+
+{% block main_content %}
+    {% if isParticular %}
+        Vous avez envoyé une candidature pour l'offre
+    {% else %}
+        Vous avez une nouvelle candidature pour l'offre
+    {% endif %}
+    <a href="{{ prefix() }}/offers/{{ offer.id }}"><strong>{{ offer.title }} - <small>de {{ offer.owner.companyName }}</small></strong></a>
+{% endblock %}
+
+{% block btn %}
+    {% if isParticular %}
+        <a href="{{ prefix() }}/applications/{{ application.id }}" style="color: white">Voir ma candidature</a>
+    {% else %}
+        <a href="{{ prefix() }}/offers/{{ offer.id }}/applications/{{ application.id }}" style="color: white">Voir la candidature</a>
+    {% endif %}
+{% endblock %}

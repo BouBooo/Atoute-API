@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
+ * @UniqueEntity("companyName")
  */
 class Company extends User
 {
@@ -21,14 +23,13 @@ class Company extends User
 
     /**
      * @ORM\Column(type="string", length=180)
-     * @Groups({"offer_read", "read"})
+     * @Groups({"offer_read", "read", "application_read"})
      */
     private string $companyName = '';
 
     /**
-     * @ORM\OneToMany(targetEntity=Offer::class, mappedBy="owner", orphanRemoval=true)
-     *
      * @var Collection&iterable<Offer>
+     * @ORM\OneToMany(targetEntity=Offer::class, mappedBy="owner", orphanRemoval=true)
      */
     private Collection $offers;
 
@@ -59,9 +60,6 @@ class Company extends User
         return $this;
     }
 
-    /**
-     * @return Collection|Offer[]
-     */
     public function getOffers(): Collection
     {
         return $this->offers;

@@ -12,6 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Particular extends User
 {
+    public const MR = 'Mr';
+    public const Mme = "Mme";
+
+    public static array $civilities = [self::MR, self::Mme];
+
     public const ROLE = 'particular';
 
     /**
@@ -21,19 +26,19 @@ class Particular extends User
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read", "application_offer_read"})
      */
     private string $firstName = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read", "application_offer_read"})
      */
     private string $lastName = '';
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "resume_read"})
+     * @Groups({"read", "resume_read", "application_read", "application_offer_read"})
      */
     private string $civility = '';
 

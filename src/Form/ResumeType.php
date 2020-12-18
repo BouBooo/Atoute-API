@@ -22,16 +22,22 @@ class ResumeType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $builder->setAttribute('cv', $options['cv']);
+
         $builder
             ->add('title')
             ->add('description', null, [
                 'required' => false
             ])
             ->add('cv', FileType::class, [
-                'mapped' => false
+                'mapped' => false,
+                'required' => false
             ])
             ->add('contractType')
             ->add('activityArea')
+            ->add('isPublic', null, [
+                'required' => false
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -43,7 +49,7 @@ class ResumeType extends AbstractType
         $resume = $event->getData();
         $form = $event->getForm();
 
-        if ($cv = $form->get('cv')->getData()) {
+        if ($cv = $form->getConfig()->getAttribute('cv')) {
             $resume->setCv($this->uploader->upload($cv));
         }
     }
@@ -53,7 +59,8 @@ class ResumeType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Resume::class,
             'csrf_protection' => false, // Api context
-            'allow_extra_fields' => true
+            'allow_extra_fields' => true,
+            'cv' => null
         ]);
     }
 }

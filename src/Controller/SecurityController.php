@@ -6,9 +6,7 @@ use App\Entity\Company;
 use App\Entity\Particular;
 use App\Entity\User;
 use App\Event\UserCreatedEvent;
-use App\Helper\UserHelper;
 use App\Repository\UserRepository;
-use App\Service\AuthService;
 use App\Service\TokenGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -38,24 +36,6 @@ final class SecurityController extends BaseController
     }
 
     /**
-     * @Route("/login", name="login", methods={"POST"})
-     */
-    public function login(AuthService $authService): JsonResponse
-    {
-        $user = $authService->getUser();
-
-        return $this->respond('logged_successfully', [
-            'accessToken' => $user->getAccessToken(),
-            'refreshToken' => $user->getRefreshToken()
-        ]);
-    }
-
-    /**
-     * @Route("/logout", name="logout", methods={"POST"})
-     */
-    public function logout(): void {}
-
-    /**
      * @Route("/register", name="register", methods={"POST"})
      */
     public function register(
@@ -67,11 +47,15 @@ final class SecurityController extends BaseController
         $data = $this->testJson($request);
 
         if (!array_key_exists('email', $data) || !array_key_exists('password', $data) || !array_key_exists('role', $data)) {
-            throw new AuthenticationException('empty_credentials');
+            return $this->respondWithError('empty_credentials');
+        }
+
+        if (!in_array($data['role'], User::$roles, true)) {
+            return $this->respondWithError('role_doesnt_exists');
         }
 
         if ($this->userRepository->isAlreadyExists($data['email'])) {
-            throw new AuthenticationException('email_already_exists');
+            return $this->respondWithError('email_already_exists');
         }
 
         $userClass = Company::ROLE === $data['role'] ? Company::class : Particular::class;
@@ -82,8 +66,6 @@ final class SecurityController extends BaseController
         $hash = $encoder->encodePassword($user, $user->getPassword());
         $user->setPassword($hash)
             ->setConfirmationToken($tokenGeneratorService->generate());
-
-        $tokenGeneratorService->generateAuthToken($user);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

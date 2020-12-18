@@ -29,12 +29,15 @@ class OfferType extends AbstractType
                 'mapped' => false
             ])
             ->add('city')
-            ->add('postal_code')
+            ->add('postal_code', null, [
+                'empty_data' => ''
+            ])
             ->add('salary', null, [
                 'required' => false
             ])
             ->add('type')
             ->add('activity')
+            ->add('status')
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -52,6 +55,10 @@ class OfferType extends AbstractType
 
         if ($endAt = $form->get('end_at')->getData()) {
             $offer->setEndAt((new \DateTime())->setTimestamp($endAt));
+        }
+
+        if ($form->get('status')->getData() === Offer::PUBLISHED) {
+            $offer->setPublishedAt(new \DateTime());
         }
     }
 

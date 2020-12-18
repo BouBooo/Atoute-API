@@ -1,5 +1,7 @@
 # Atoute 👋 - back
 
+[![pipeline status](https://gitlab.com/QuentG/atoute-back/badges/develop/pipeline.svg)](https://gitlab.com/QuentG/atoute-back/-/commits/develop)
+
 ### Prerequisites
 
 Install the docker stack as defined in the [tools repository](https://gitlab.com/atoute/back/-/tree/master/docker)

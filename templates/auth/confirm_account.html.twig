@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Veuillez confirmer votre compte.{% endblock %}
+
+{% block main_content %}Veuillez confirmer votre compte en cliquant sur le lien suivant :{% endblock %}
+
+{% block btn %}
+    <a href="localhost:8080/register/confirmation/{{ id }}/{{ token }}" style="color: white">Confirmer mon compte</a>
+{% endblock %}

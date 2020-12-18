@@ -8,7 +8,6 @@ use App\Entity\Offer;
 use App\Entity\Particular;
 use App\Entity\Resume;
 use App\Enum\EntityEnum;
-use App\Service\TokenGeneratorService;
 use App\Utils\FixturesUtils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -22,7 +21,6 @@ class AppFixtures extends Fixture
 
     private Generator $faker;
     private UserPasswordEncoderInterface $passwordEncoder;
-    private TokenGeneratorService $tokenGeneratorService;
     private FixturesUtils $fixturesUtils;
 
     private array $users = [];
@@ -32,12 +30,10 @@ class AppFixtures extends Fixture
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        TokenGeneratorService $tokenGeneratorService,
         FixturesUtils $fixturesUtils
     ) {
         $this->faker = Factory::create('fr_FR');
         $this->passwordEncoder = $passwordEncoder;
-        $this->tokenGeneratorService = $tokenGeneratorService;
         $this->fixturesUtils = $fixturesUtils;
     }
 
@@ -58,16 +54,15 @@ class AppFixtures extends Fixture
             $user->setPassword($this->passwordEncoder->encodePassword($user, self::PASSWORD))
                 ->setIsVerified(true);
 
-            if ($user instanceof Company) {
+            if ($user->isCompany()) {
                 $user->setEmail(sprintf('company%s@test.com', $u))
                     ->setCompanyName($this->faker->company);
             } else {
                 $user->setEmail(sprintf('particular%s@test.com', $u))
+                    ->setCivility($this->fixturesUtils->getRandomItem(Particular::$civilities))
                     ->setFirstName($this->faker->firstName)
                     ->setLastName($this->faker->lastName);
             }
-
-            $this->tokenGeneratorService->generateAuthToken($user);
 
             $this->users[] = $user;
 
@@ -79,7 +74,7 @@ class AppFixtures extends Fixture
     {
         $particulars = $this->getParticulars();
 
-        for ($r = 0; $r < count($particulars); ++$r) {
+        for ($r = 0, $rMax = count($particulars); $r < $rMax; ++$r) {
             $resume = (new Resume())
                 ->setTitle($this->faker->jobTitle)
                 ->setCv(sprintf('/no-cv-%s', $r))
@@ -87,6 +82,7 @@ class AppFixtures extends Fixture
                 ->setActivityArea($this->fixturesUtils->getRandomItem(EntityEnum::$activities))
                 ->setOwner($this->fixturesUtils->getRandomItem($particulars))
                 ->setDescription($r < count($particulars) / 2 ? $this->fixturesUtils->generateParagraph(2) : null)
+                ->setIsPublic($r < $rMax / 2)
             ;
 
             $this->resumes[] = $resume;
@@ -110,6 +106,7 @@ class AppFixtures extends Fixture
                 ->setType($this->fixturesUtils->getRandomItem(EntityEnum::$types))
                 ->setActivity($this->fixturesUtils->getRandomItem(EntityEnum::$activities))
                 ->setSalary($o < 20 ? $this->faker->numberBetween(300, 7000) : null)
+                ->setStatus($this->fixturesUtils->getRandomItem(Offer::$offerStatus))
                 ->setOwner($this->fixturesUtils->getRandomItem($companies))
             ;
 
@@ -127,7 +124,9 @@ class AppFixtures extends Fixture
             $application = (new Application())
                 ->setMessage($a < 30 ? $this->fixturesUtils->generateParagraph() : null)
                 ->setCandidate($this->fixturesUtils->getRandomItem($particulars))
+                ->setResume($this->fixturesUtils->getRandomItem($this->resumes))
                 ->setOffer($this->fixturesUtils->getRandomItem($this->offers))
+                ->setStatus($this->fixturesUtils->getRandomItem(Application::$applicationStatus))
             ;
 
             $this->applications[] = $application;
@@ -138,11 +137,11 @@ class AppFixtures extends Fixture
 
     private function getParticulars(): array
     {
-        return array_filter($this->users, static fn ($user) => $user instanceof Particular);
+        return array_filter($this->users, static fn ($user) => $user->isParticular());
     }
 
     private function getCompanies(): array
     {
-        return array_filter($this->users, static fn ($user) => $user instanceof Company);
+        return array_filter($this->users, static fn ($user) => $user->isCompany());
     }
 }

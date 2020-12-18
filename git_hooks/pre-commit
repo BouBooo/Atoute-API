@@ -4,4 +4,4 @@
 DIFF=$(git -c diff.mnemonicprefix=false --no-pager diff -r -p -m -M --full-index --no-color --staged | cat)
 
 # Run GrumPHP
-(printf "%s\n" "${DIFF}" | docker exec -i atoute_php_1 bash -c "php -d memory_limit=512M vendor/bin/grumphp git:pre-commit --ansi --skip-success-output")
+(printf "%s\n" "${DIFF}" | docker exec -i atoute-back_php_1 bash -c "php -d memory_limit=512M vendor/bin/grumphp git:pre-commit --ansi --skip-success-output")

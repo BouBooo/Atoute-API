@@ -18,17 +18,19 @@ abstract class User implements UserInterface, \Serializable
 {
     use TimestampableTrait;
 
+    public static array $roles = [Particular::ROLE, Company::ROLE];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"private"})
+     * @Groups({"offer_read", "resume_read", "application_read"})
      */
     protected ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"read"})
+     * @Groups({"read", "resume_read", "application_read"})
      */
     protected string $email = '';
 
@@ -38,24 +40,6 @@ abstract class User implements UserInterface, \Serializable
      * @Groups({"private"})
      */
     protected string $password = '';
-
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"private"})
-     */
-    protected string $accessToken = '';
-
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"private"})
-     */
-    protected string $refreshToken = '';
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"private"})
-     */
-    protected ?\DateTime $expirationDate = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -119,39 +103,14 @@ abstract class User implements UserInterface, \Serializable
 
     abstract public function getRoles(): array;
 
-    public function getAccessToken(): string
+    public function isCompany(): bool
     {
-        return $this->accessToken;
+        return $this instanceof Company;
     }
 
-    public function setAccessToken(string $accessToken): void
+    public function isParticular(): bool
     {
-        $this->accessToken = $accessToken;
-    }
-
-    public function getRefreshToken(): string
-    {
-        return $this->refreshToken;
-    }
-
-    public function setRefreshToken(string $refreshToken): void
-    {
-        $this->refreshToken = $refreshToken;
-    }
-
-    public function getExpirationDate(): \DateTime
-    {
-        return $this->expirationDate;
-    }
-
-    public function setExpirationDate(\DateTime $expirationDate): void
-    {
-        $this->expirationDate = $expirationDate;
-    }
-
-    public function tokenIsValid(\DateTime $dateTime): bool
-    {
-        return $this->expirationDate > $dateTime;
+        return $this instanceof Particular;
     }
 
     public function getResetPasswordToken(): ?string
@@ -176,7 +135,7 @@ abstract class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function isVerified(): ?bool
+    public function isVerified(): bool
     {
         return $this->isVerified;
     }
