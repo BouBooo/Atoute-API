@@ -18,6 +18,8 @@ before_script:
 
 test:
  type: test
+ only:
+    - master
  image: php:7.4-fpm
  before_script:
    - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
