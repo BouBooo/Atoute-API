@@ -5,22 +5,11 @@ stages:
  - build
  - deploy
 
-before_script:
-  # Setup SSH deploy keys
-  - echo "test issue"
-  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$PRIVATE_SSH_KEY")
-  - mkdir -p ~/.ssh
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-  # Connection to Docker Hub
-  - docker info
-  - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
-
 test:
  type: test
  only:
     - master
+    - develop
  image: php:7.4-fpm
  before_script:
    - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
@@ -38,6 +27,7 @@ coverage:
   type: test
   only:
     - master
+    - develop
   image: ciricihq/gitlab-sonar-scanner
   variables:
     SONAR_URL: $SONAR_URL
@@ -48,6 +38,17 @@ build:
  type: build
  only:
    - master
+ before_script:
+   # Setup SSH deploy keys
+   - echo "test issue"
+   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+   - eval $(ssh-agent -s)
+   - ssh-add <(echo "$PRIVATE_SSH_KEY")
+   - mkdir -p ~/.ssh
+   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+   # Connection to Docker Hub
+   - docker info
+   - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
  script:
    - docker build -f Dockerfile-prod -t registry.gitlab.com/quentg/atoute-back/api .
    - docker push registry.gitlab.com/quentg/atoute-back/api
@@ -56,5 +57,16 @@ deploy:
  type: deploy
  only:
    - master
+ before_script:
+   # Setup SSH deploy keys
+   - echo "test issue"
+   - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+   - eval $(ssh-agent -s)
+   - ssh-add <(echo "$PRIVATE_SSH_KEY")
+   - mkdir -p ~/.ssh
+   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+   # Connection to Docker Hub
+   - docker info
+   - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
  script:
    - ssh root@142.93.52.107 "cd /atoute && ./deploy.sh && exit"
