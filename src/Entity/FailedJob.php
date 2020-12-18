@@ -22,6 +22,11 @@ class FailedJob
         return $this->envelope->all($stamp);
     }
 
+    public function getMessage()
+    {
+        return $this->envelope->getMessage();
+    }
+
     public function getId(): int 
     {
         $stamps = $this->getTrace(DoctrineReceivedStamp::class);

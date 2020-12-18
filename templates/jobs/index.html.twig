@@ -1,4 +1,4 @@
-{% extends 'admin.html.twig' %}
+{% extends 'layouts/admin.html.twig' %}
 
 {% block body %}
 
@@ -25,9 +25,14 @@
                 <td>{{ job.getDeliveryMethod }}</td>
                 <td>{{ job.getRetryCount }}</td>
                 <td>{{ job.getFailedAt }}</td>
-                <td>
-                    <a href="#" class="btn btn-success">Retry</a>
-                    <a href="#" class="btn btn-danger">Remove</a>
+                <td class="d-flex justify-content-center">
+                    <form action="{{ path('admin_failed_jobs_retry', { id : job.id }) }}" method="POST" class="mx-3">
+                        <button type="submit" class="btn btn-success">Retry                    
+                    </form>
+                    <form action="{{ path('admin_failed_jobs_remove', { id : job.id }) }}" method="POST" class="mx-3">
+                        <input type="hidden" name="_method" value="DELETE"/>  
+                        <button type="submit" class="btn btn-danger">Remove                    
+                    </form>
                 </td>
             </tr>
             {% endfor %}

@@ -15,9 +15,19 @@ class FailedJobRepository
         $this->receiver = $receiver;
     }
 
-    public function findAll()
+    public function find(string $id): FailedJob
+    {
+        return new FailedJob($this->receiver->find($id));
+    }
+
+    public function findAll(): array
     {
         return array_map(fn (Envelope $envelope) => new FailedJob($envelope),
             iterator_to_array($this->receiver->all()));
+    }
+
+    public function reject(string $id)
+    {
+        $this->receiver->reject($this->receiver->find($id));
     }
 }
