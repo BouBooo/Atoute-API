@@ -9,7 +9,6 @@ test:
  type: test
  only:
     - master
-    - develop
  image: php:7.4-fpm
  before_script:
    - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
@@ -28,7 +27,6 @@ coverage:
  type: test
  only:
    - master
-   - develop
  script:
    - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
  allow_failure: true
