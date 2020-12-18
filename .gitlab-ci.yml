@@ -32,7 +32,7 @@ coverage:
   variables:
     SONAR_URL: http://161.35.6.31:9000
   script:
-    - gitlab-sonar-scanner -Dsonar.projectKey=atoute-api -Dsonar.sources=.
+    - gitlab-sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=atoute-api -Dsonar.sources=.
 
 build:
  type: build
