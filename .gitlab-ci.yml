@@ -30,7 +30,7 @@ coverage:
     - develop
   image: ciricihq/gitlab-sonar-scanner
   variables:
-    SONAR_URL: $SONAR_URL
+    SONAR_URL: http://161.35.6.31:9000
   script:
     - gitlab-sonar-scanner -Dsonar.projectKey=atoute-api -Dsonar.sources=.
 
