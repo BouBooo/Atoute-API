@@ -6,15 +6,16 @@ stages:
  - deploy
 
 before_script:
- # Setup SSH deploy keys
- - 'which ssh-agent || ( apt-get install -qq openssh-client )'
- - eval $(ssh-agent -s)
- - ssh-add <(echo "$PRIVATE_SSH_KEY")
- - mkdir -p ~/.ssh
- - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
- # Connection to Docker Hub
- - docker info
- - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
+  # Setup SSH deploy keys
+  - echo "test issue"
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$PRIVATE_SSH_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  # Connection to Docker Hub
+  - docker info
+  - docker login registry.gitlab.com -u lucasconsejo -p TdQLTdyVMnL_D-NzqVRW
 
 test:
  type: test
