@@ -128,12 +128,13 @@ final class ApplicationController extends BaseController
         }
 
         $data = $this->testJson($request);
+        $user = $this->authService->getUser();
 
         if (!array_key_exists('status', $data) || !array_key_exists('message', $data)) {
             return $this->respondWithError('bad_keys');
         }
 
-        if (!$this->isGranted(ApplicationVoter::EDIT, $application)) {
+        if ($user->isCompany() && $application->isOwner($user->getId())) {
             return $this->respondWithError('bad_offer_owner');
         }
 

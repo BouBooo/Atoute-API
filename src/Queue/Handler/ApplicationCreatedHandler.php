@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Entity\Application;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Queue\Message\UserCreatedMessage;
 use App\Queue\Message\ApplicationCreatedMessage;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 

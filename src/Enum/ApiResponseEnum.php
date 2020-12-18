@@ -14,7 +14,7 @@ abstract class ApiResponseEnum
     public const USER_CANNOT_APPLY = 'company_cant_applied';
 
     public const OFFER_DELETE = 'offer_removed';
-    public const OFFER_BAD_OWNER = 'bad_offer_owner';
+    public const OFFER_BAD_OWNER = 'not_offer_owner';
 
     public const RESUME_BAD_OWNER = 'not_your_resume';
 
