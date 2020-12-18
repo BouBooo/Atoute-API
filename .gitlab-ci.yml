@@ -25,6 +25,7 @@ test:
    - apt-get update && apt-get install -y zip libzip-dev unzip git curl libfreetype6-dev libjpeg62-turbo-dev libxslt-dev libpng-dev && docker-php-ext-install -j$(nproc) gd xsl intl zip
    - apt install docker.io -y && service docker start
    - curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+   - composer require symfony/messenger
    - composer install
  script:
    - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
