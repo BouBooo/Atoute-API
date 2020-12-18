@@ -24,24 +24,16 @@ test:
    - php bin/phpunit
    
 coverage:
-  image: sonarsource/sonar-scanner-cli
-  type: test
-  only:
-    - master
-    - develop
-  needs: []
-  dependencies: []
-  script:
-    - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
-  allow_failure: true
-  variables:
-    SONAR_PROJECT_BASE_DIR: "${CI_PROJECT_DIR}"
-    GIT_DEPTH: 0
-  cache:
-    key: "sonar-${CI_PROJECT_ID}"
-    paths:
-      - ".scannerwork"
-      - ".sonar"
+ image: sonarsource/sonar-scanner-cli
+ type: test
+ only:
+   - master
+   - develop
+ script:
+   - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
+ allow_failure: true
+ variables:
+   SONAR_PROJECT_BASE_DIR: "${CI_PROJECT_DIR}"
 
 build:
  type: build
