@@ -30,22 +30,17 @@ security:
             user_checker: App\Security\UserChecker
 
         api_register:
-            pattern: ^/(auth/register|reset-password|doc|token/refresh)
+            pattern: ^/(auth/register|reset-password|doc|token/refresh|admin)
             stateless: true
             anonymous: true
 
         api:
-            pattern: ^/(admin)(?!/jobs)
+            pattern: ^/
             stateless: true
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
-        admin:
-            pattern: ^/admin
-            #http_basic:
-            #   realm: Secured Area
-            anonymous: true
-            security: false 
+
         main:
             anonymous: true
 
@@ -56,5 +51,5 @@ security:
         - { path: ^/reset-password/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
-        - { path: ^/admin/jobs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
