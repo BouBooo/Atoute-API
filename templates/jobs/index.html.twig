@@ -1,42 +1,43 @@
 {% extends 'layouts/admin.html.twig' %}
 
-{% block body %}
+{% block title 'Failed jobs' %}
 
-<div class="example-wrapper">
-    <h2 class="text-center my-5">Failed jobs</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Job</th>
-            <th scope="col">Bus</th>
-            <th scope="col">Delivery mode</th>
-            <th scope="col">Retries</th>
-            <th scope="col">FailedAt</th>
-            <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for job in jobs %}
-            <tr>
-                <th scope="row">{{ job.getId }}</th>
-                <td>{{ job.getJob }}</td>
-                <td>{{ job.getBusName }}</td>
-                <td>{{ job.getDeliveryMethod }}</td>
-                <td>{{ job.getRetryCount }}</td>
-                <td>{{ job.getFailedAt }}</td>
-                <td class="d-flex justify-content-center">
-                    <form action="{{ path('admin_failed_jobs_retry', { id : job.id }) }}" method="POST" class="mx-3">
-                        <button type="submit" class="btn btn-success">Retry                    
-                    </form>
-                    <form action="{{ path('admin_failed_jobs_remove', { id : job.id }) }}" method="POST" class="mx-3">
-                        <input type="hidden" name="_method" value="DELETE"/>  
-                        <button type="submit" class="btn btn-danger">Remove                    
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> 
-</div>
+{% block body %}
+    <div class="example-wrapper">
+        <h2 class="text-center my-5">Failed jobs</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Job</th>
+                <th scope="col">Bus</th>
+                <th scope="col">Delivery mode</th>
+                <th scope="col">Retries</th>
+                <th scope="col">FailedAt</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <th scope="row">{{ job.getId }}</th>
+                        <td>{{ job.getJob }}</td>
+                        <td>{{ job.getBusName }}</td>
+                        <td>{{ job.getDeliveryMethod }}</td>
+                        <td>{{ job.getRetryCount }}</td>
+                        <td>{{ job.getFailedAt }}</td>
+                        <td class="d-flex justify-content-center">
+                            <form action="{{ path('admin_failed_jobs_retry', { id: job.id }) }}" method="POST" class="mx-3">
+                                <button type="submit" class="btn btn-success">Retry</button>
+                            </form>
+                            <form action="{{ path('admin_failed_jobs_remove', { id: job.id }) }}" method="POST" class="mx-3">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

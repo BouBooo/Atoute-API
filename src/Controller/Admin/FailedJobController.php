@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Repository\FailedJobRepository;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -26,7 +27,7 @@ class FailedJobController extends AbstractController
     /**
      * @Route("/remove/{id}", name="_remove", methods={"DELETE"})
      */
-    public function remove(int $id, FailedJobRepository $failedJobRepository)
+    public function remove(int $id, FailedJobRepository $failedJobRepository): RedirectResponse
     {
         $failedJobRepository->reject($id);
         return $this->redirectToRoute('admin_failed_jobs');
@@ -35,7 +36,11 @@ class FailedJobController extends AbstractController
     /**
      * @Route("/retry/{id}", name="_retry", methods={"POST"})
      */
-    public function retry(int $id, FailedJobRepository $failedJobRepository, MessageBusInterface $busInterface)
+    public function retry(
+        int $id,
+        FailedJobRepository $failedJobRepository,
+        MessageBusInterface $busInterface
+    ): RedirectResponse
     {
         $message = $failedJobRepository->find($id)->getMessage();
         $busInterface->dispatch($message);
