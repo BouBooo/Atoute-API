@@ -85,11 +85,15 @@ final class OfferController extends BaseController
         $type = (string) $request->query->get('type') !== "" ? (string) $request->query->get('type') : null;
         $activity = (string) $request->query->get('activity') !== "" ? (string) $request->query->get('activity') : null;
         $salary = (int) $request->query->get('salary') !== 0 ? (int) $request->query->get('salary') : null;
+        $startAt = (string) $request->query->get('start') !== "" ? (string) $request->query->get('start') : null;
+        $endAt = (string) $request->query->get('end') !== "" ? (string) $request->query->get('end') : null;
         // Filters array
         $filters = array();
         $filters["type"] = $type;
         $filters["activity"] = $activity;
         $filters["salary"] = $salary;
+        $filters["startAt"] = $startAt;
+        $filters["endAt"] = $endAt;
 
         $pagination = $paginator->paginate(
             $this->offerRepository->getPublishQuery($limit, $filters), // Requête contenant les données à paginer (ici nos articles)
