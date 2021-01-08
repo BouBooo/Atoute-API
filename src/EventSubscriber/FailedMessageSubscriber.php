@@ -25,12 +25,13 @@ class FailedMessageSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onMessageFailed(WorkerMessageFailedEvent $event)
+    public function onMessageFailed(WorkerMessageFailedEvent $event): void
     {
         $failureEmail = $this->mailer->buildEmail(self::CONTACT_EMAIL, self::TWIG_TEMPLATE, [
             'message' => get_class($event->getEnvelope()->getMessage()),
             'trace' => $event->getThrowable()->getTraceAsString()
         ]);
+
         $this->mailer->send($failureEmail);
     }
 }

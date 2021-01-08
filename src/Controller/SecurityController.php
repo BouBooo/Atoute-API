@@ -14,10 +14,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Tag(name="Authentication")
  * @Route("/auth", name="app_")
  */
 final class SecurityController extends BaseController
@@ -86,7 +87,7 @@ final class SecurityController extends BaseController
             return $this->respondWithError('credentials_not_provided');
         }
 
-        if (!$userExists = $this->entityManager->getRepository(User::class)->find($data['id'])) {
+        if (!$userExists = $this->userRepository->find($data['id'])) {
             return $this->respondWithError('user_not_found');
         }
 

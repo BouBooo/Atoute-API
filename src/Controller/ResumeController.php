@@ -14,8 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Tag(name="Resume")
  * @Route("/resumes", name="resume_")
  */
 final class ResumeController extends BaseController

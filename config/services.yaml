@@ -44,6 +44,9 @@ services:
         arguments:
             $from: '%env(MAILER_FROM)%'
 
+    App\Repository\FailedJobRepository:
+        arguments: ['@messenger.transport.failed']
+
     Elastica\Client:
         $config:
             host: 'elasticsearch' # or 127.0.0.1

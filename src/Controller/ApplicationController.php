@@ -10,7 +10,7 @@ use App\Repository\ApplicationRepository;
 use App\Repository\OfferRepository;
 use App\Repository\ResumeRepository;
 use App\Security\Voter\ApplicationVoter;
-use App\Security\Voter\ResumeVoter;
+use OpenApi\Annotations as OA;
 use App\Service\AuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @OA\Tag(name="Application")
  * @Route("/applications", name="application_")
  */
 final class ApplicationController extends BaseController

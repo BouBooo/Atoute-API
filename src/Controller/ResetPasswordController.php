@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Tag(name="Authentication")
  * @Route("/reset-password", name="reset_")
  */
 final class ResetPasswordController extends BaseController

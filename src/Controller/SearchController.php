@@ -8,8 +8,10 @@ use Elastica\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Tag(name="Search")
  * @Route("/search", name="search_")
  */
 final class SearchController extends BaseController

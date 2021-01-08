@@ -13,8 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Tag(name="Offer")
  * @Route("/offers", name="offer_")
  */
 final class OfferController extends BaseController
