@@ -53,19 +53,23 @@ class OfferRepository extends ServiceEntityRepository
 
         foreach($filters as $f => $v) {
             if (null !== $v) {
-                $qb->andWhere('o.'.$f.' = :'.$f)
-                ->setParameter($f, $v);
+                if($f === "salary"){
+                    $qb->andWhere('o.'.$f.' >= :'.$f)
+                    ->setParameter($f, $v);
+                }elseif($f === "startAt"){
+                    $qb->andWhere('o.'.$f.' >= :'.$f)
+                    ->setParameter($f, $v);
+                }elseif($f === "endAt"){
+                    $qb->andWhere('o.'.$f.' <= :'.$f)
+                    ->setParameter($f, $v);
+                }
+                else {
+                    $qb->andWhere('o.'.$f.' = :'.$f)
+                    ->setParameter($f, $v);
+                }  
             }
         }
-        // if (null !== $type) {
-        //     $qb->andWhere('o.type = :type')
-        //     ->setParameter('type', $type);
-        // }
-        // if (null !== $type) {
-        //     $qb->andWhere('o.activity = :activity')
-        //     ->setParameter('activity', $activity);
-        // }
-
+        
         $qb->orderBy('o.publishedAt', 'DESC')
         ->setParameter('status', Offer::PUBLISHED)
         ->setMaxResults($limit);

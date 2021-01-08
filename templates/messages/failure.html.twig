@@ -1,10 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/base.html.twig' %}
 
 {% block title %}Erreur{% endblock %}
 
 {% block main_content %}
     <p>Une erreur est survenue lors du traitement d'une tâche</p>
     <p>Tache concernée : <b>{{ message }}</b></p>
+{% endblock %}
+
+{% block btn %}
     <pre>
         <code>
             {{ trace }}
