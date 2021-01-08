@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Offer;
 use App\Entity\Resume;
+use App\Manager\ResumeManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -16,9 +17,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class OfferRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private ResumeManager $resumeManager;
+
+    public function __construct(ManagerRegistry $registry, ResumeManager $resumeManager)
     {
         parent::__construct($registry, Offer::class);
+        $this->resumeManager = $resumeManager;
     }
 
     public function hasAlreadyApplied(int $offerId, int $userId)
@@ -79,21 +83,35 @@ class OfferRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function getRelatedOffer(Resume $resume)
+    public function getRelatedOffer(Resume $resume, array $filters)
     {
-        return $this->createQueryBuilder('o')
+        $qb = $this->createQueryBuilder('o')
         ->orderBy('o.publishedAt', 'DESC')
-        ->andWhere('o.type = :type')
-        ->orWhere('o.activity = :activity')
         ->andWhere('o.status = :status')
-        ->setParameters([
-            'type' => $resume->getContractType(),
-            'activity' => $resume->getActivityArea(),
-            'status' => Offer::PUBLISHED
-        ])
+        ->setParameter('status', Offer::PUBLISHED);
 
-        ->setMaxResults(1)
+        if(in_array('type', $filters)) {
+            $qb->andWhere('o.type = :type')
+            ->setParameter('type', $resume->getContractType());
+        }
+
+        if(in_array('activity', $filters)) {
+            $qb->andWhere('o.activity = :activity')
+            ->setParameter('activity', $resume->getActivityArea());
+        }
+
+        // TODO: Englobe words condition with 'AND' and chain them with 'OR'
+        // ex: WHERE description LIKE %php% OR description LIKE %reactjs%
+        if(in_array('words', $filters)) {
+            $words = $this->resumeManager->extractKeywords($resume);
+            foreach ($words as $word) {
+                $qb->orWhere('o.description LIKE :word')
+                ->setParameter('word', $word);
+            }
+        }
+
+        return $qb
         ->getQuery()
-        ->getOneOrNullResult();
+        ->getResult();
     }
 }

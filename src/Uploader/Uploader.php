@@ -42,7 +42,7 @@ class Uploader implements UploaderInterface
 
         $file->move($this->uploadsAbsoluteDir, $filename);
 
-        return $this->getCurrentDomain() . "/" . $this->uploadsRelativeDir . $filename;
+        return $filename;
     }
 
     public function remove(string $path): void

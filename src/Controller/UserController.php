@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Offer;
 use App\Entity\Resume;
 use Spatie\PdfToText\Pdf;
 use App\Entity\Application;
@@ -139,7 +140,6 @@ final class UserController extends BaseController
      */
     public function relatedOffers(UserRepository $userRepository, OfferRepository $offerRepository, ResumeRepository $resumeRepository)
     {
-
         $user = $this->authService->getUser();
 
         if ($user->isCompany()) {
@@ -148,7 +148,7 @@ final class UserController extends BaseController
 
         $offers = [];
         foreach($user->getResumes() as $resume) {
-            $relatedOffer = $offerRepository->getRelatedOffer($resume);
+            $relatedOffer = $offerRepository->getRelatedOffer($resume, Offer::FILTERS);
             $offers[] = json_decode($this->serializer->serialize($relatedOffer, 'json', ['groups' => 'offer_read']));
         }
 
