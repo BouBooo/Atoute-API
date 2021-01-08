@@ -56,7 +56,14 @@ class OfferRepository extends ServiceEntityRepository
                 if($f === "salary"){
                     $qb->andWhere('o.'.$f.' >= :'.$f)
                     ->setParameter($f, $v);
-                }else {
+                }elseif($f === "startAt"){
+                    $qb->andWhere('o.'.$f.' >= :'.$f)
+                    ->setParameter($f, $v);
+                }elseif($f === "endAt"){
+                    $qb->andWhere('o.'.$f.' <= :'.$f)
+                    ->setParameter($f, $v);
+                }
+                else {
                     $qb->andWhere('o.'.$f.' = :'.$f)
                     ->setParameter($f, $v);
                 }  
