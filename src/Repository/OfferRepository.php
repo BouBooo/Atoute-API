@@ -3,9 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Offer;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
+use App\Entity\Resume;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Offer|null find($id, $lockMode = null, $lockVersion = null)
@@ -76,5 +77,23 @@ class OfferRepository extends ServiceEntityRepository
 
         return $qb->getQuery()
         ->getResult();
+    }
+
+    public function getRelatedOffer(Resume $resume)
+    {
+        return $this->createQueryBuilder('o')
+        ->orderBy('o.publishedAt', 'DESC')
+        ->andWhere('o.type = :type')
+        ->orWhere('o.activity = :activity')
+        ->andWhere('o.status = :status')
+        ->setParameters([
+            'type' => $resume->getContractType(),
+            'activity' => $resume->getActivityArea(),
+            'status' => Offer::PUBLISHED
+        ])
+
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
     }
 }

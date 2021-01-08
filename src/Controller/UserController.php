@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Application;
 use App\Entity\Resume;
+use Spatie\PdfToText\Pdf;
+use App\Entity\Application;
 use App\Manager\UserManager;
 use App\Service\AuthService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use OpenApi\Annotations as OA;
+use App\Repository\UserRepository;
+use App\Repository\OfferRepository;
+use App\Repository\ResumeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
-use OpenApi\Annotations as OA;
 
 /**
  * @OA\Tag(name="User")
@@ -128,5 +132,26 @@ final class UserController extends BaseController
         }
 
         return $this->respond('offers_infos', $offers);
+    }
+
+    /**
+     * @Route("/offers/related", name="offers_related", methods={"GET"})
+     */
+    public function relatedOffers(UserRepository $userRepository, OfferRepository $offerRepository, ResumeRepository $resumeRepository)
+    {
+
+        $user = $this->authService->getUser();
+
+        if ($user->isCompany()) {
+            return $this->respondWithError('company_cant_have_related_offers');
+        }
+
+        $offers = [];
+        foreach($user->getResumes() as $resume) {
+            $relatedOffer = $offerRepository->getRelatedOffer($resume);
+            $offers[] = json_decode($this->serializer->serialize($relatedOffer, 'json', ['groups' => 'offer_read']));
+        }
+
+        return $this->respond('related_offers', $offers);
     }
 }
