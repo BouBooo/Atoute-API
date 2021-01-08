@@ -28,8 +28,8 @@ coverage:
  only:
    - master
  script:
-   - sonar-scanner -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.login=923296fe4de95ee71fa3c2bb9cf33f081f2a5299
-  # - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
+  # - sonar-scanner -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.login=923296fe4de95ee71fa3c2bb9cf33f081f2a5299
+   - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
  allow_failure: true
  variables:
    SONAR_PROJECT_BASE_DIR: "${CI_PROJECT_DIR}"
