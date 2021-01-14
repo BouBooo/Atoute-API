@@ -46,9 +46,9 @@ class OfferRepository extends ServiceEntityRepository
         }
     }
 
-/**
- * Return Query
- */
+    /**
+     * Return Query
+     */
     public function getPublishQuery(?int $limit = null, ?array $filters = null)
     {
 
@@ -83,6 +83,9 @@ class OfferRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    /**
+     * Filters can be managed from the Offer entity
+     */
     public function getRelatedOffer(Resume $resume, array $filters)
     {
         $qb = $this->createQueryBuilder('o')
@@ -100,13 +103,18 @@ class OfferRepository extends ServiceEntityRepository
             ->setParameter('activity', $resume->getActivityArea());
         }
 
-        // TODO: Englobe words condition with 'AND' and chain them with 'OR'
-        // ex: WHERE description LIKE %php% OR description LIKE %reactjs%
         if(in_array('words', $filters)) {
             $words = $this->resumeManager->extractKeywords($resume);
-            foreach ($words as $word) {
-                $qb->orWhere('o.description LIKE :word')
-                ->setParameter('word', $word);
+            if(!empty($words)) {
+                foreach ($words as $key => $word) {
+                    if ($key == count($words)-1) {
+                        $sqlCondition[] = "o.description LIKE '%" . $word ."%'";
+                    } else {
+                        $sqlCondition[] = " o.description LIKE '%" . $word . "%' OR ";
+    
+                    }
+                }
+                $qb->andWhere(implode($sqlCondition));
             }
         }
 
