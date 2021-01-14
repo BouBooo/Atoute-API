@@ -19,8 +19,10 @@ class ResumeManager
 
         $result = [];
 
-        foreach(Offer::KEYWORDS as $keyword) {
-            if (str_contains(strtolower($text), $keyword)) $result[] = $keyword;
+        foreach (Offer::KEYWORDS as $keyword) {
+            if (str_contains(strtolower($text), $keyword)) {
+                $result[] = $keyword;
+            }
         }
 
         return $result;

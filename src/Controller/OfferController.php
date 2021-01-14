@@ -87,8 +87,9 @@ final class OfferController extends BaseController
         $salary = (int) $request->query->get('salary') !== 0 ? (int) $request->query->get('salary') : null;
         $startAt = (string) $request->query->get('start') !== "" ? (string) $request->query->get('start') : null;
         $endAt = (string) $request->query->get('end') !== "" ? (string) $request->query->get('end') : null;
+
         // Filters array
-        $filters = array();
+        $filters = [];
         $filters["type"] = $type;
         $filters["activity"] = $activity;
         $filters["salary"] = $salary;

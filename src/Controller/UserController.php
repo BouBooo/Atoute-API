@@ -4,14 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Offer;
 use App\Entity\Resume;
-use Spatie\PdfToText\Pdf;
 use App\Entity\Application;
 use App\Manager\UserManager;
 use App\Service\AuthService;
 use OpenApi\Annotations as OA;
-use App\Repository\UserRepository;
 use App\Repository\OfferRepository;
-use App\Repository\ResumeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -138,7 +135,7 @@ final class UserController extends BaseController
     /**
      * @Route("/offers/related", name="offers_related", methods={"GET"})
      */
-    public function relatedOffers(UserRepository $userRepository, OfferRepository $offerRepository, ResumeRepository $resumeRepository)
+    public function relatedOffers(OfferRepository $offerRepository): JsonResponse
     {
         $user = $this->authService->getUser();
 

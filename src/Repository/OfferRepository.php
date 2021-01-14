@@ -51,36 +51,33 @@ class OfferRepository extends ServiceEntityRepository
      */
     public function getPublishQuery(?int $limit = null, ?array $filters = null)
     {
-
         $qb = $this->createQueryBuilder('o')
             ->where('o.status = :status');
 
-
-        foreach($filters as $f => $v) {
+        foreach ($filters as $f => $v) {
             if (null !== $v) {
-                if($f === "salary"){
+                if ($f === "salary") {
                     $qb->andWhere('o.'.$f.' >= :'.$f)
-                    ->setParameter($f, $v);
-                }elseif($f === "startAt"){
+                        ->setParameter($f, $v);
+                } elseif ($f === "startAt") {
                     $qb->andWhere('o.'.$f.' >= :'.$f)
-                    ->setParameter($f, $v);
-                }elseif($f === "endAt"){
+                        ->setParameter($f, $v);
+                } elseif ($f === "endAt") {
                     $qb->andWhere('o.'.$f.' <= :'.$f)
-                    ->setParameter($f, $v);
-                }
-                else {
+                        ->setParameter($f, $v);
+                } else {
                     $qb->andWhere('o.'.$f.' = :'.$f)
-                    ->setParameter($f, $v);
+                        ->setParameter($f, $v);
                 }  
             }
         }
         
-        $qb->orderBy('o.publishedAt', 'DESC')
-        ->setParameter('status', Offer::PUBLISHED)
-        ->setMaxResults($limit);
-
-        return $qb->getQuery()
-        ->getResult();
+        return $qb->orderBy('o.publishedAt', 'DESC')
+            ->setParameter('status', Offer::PUBLISHED)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     /**
@@ -89,37 +86,36 @@ class OfferRepository extends ServiceEntityRepository
     public function getRelatedOffer(Resume $resume, array $filters)
     {
         $qb = $this->createQueryBuilder('o')
-        ->orderBy('o.publishedAt', 'DESC')
-        ->andWhere('o.status = :status')
-        ->setParameter('status', Offer::PUBLISHED);
+            ->orderBy('o.publishedAt', 'DESC')
+            ->andWhere('o.status = :status')
+            ->setParameter('status', Offer::PUBLISHED);
 
-        if(in_array('type', $filters)) {
+        if (in_array('type', $filters, true)) {
             $qb->andWhere('o.type = :type')
             ->setParameter('type', $resume->getContractType());
         }
 
-        if(in_array('activity', $filters)) {
+        if (in_array('activity', $filters, true)) {
             $qb->andWhere('o.activity = :activity')
             ->setParameter('activity', $resume->getActivityArea());
         }
 
-        if(in_array('words', $filters)) {
+        if (in_array('words', $filters, true)) {
             $words = $this->resumeManager->extractKeywords($resume);
-            if(!empty($words)) {
+            if (!empty($words)) {
                 foreach ($words as $key => $word) {
-                    if ($key == count($words)-1) {
+                    if ($key === count($words) - 1) {
                         $sqlCondition[] = "o.description LIKE '%" . $word ."%'";
                     } else {
                         $sqlCondition[] = " o.description LIKE '%" . $word . "%' OR ";
     
                     }
                 }
+
                 $qb->andWhere(implode($sqlCondition));
             }
         }
 
-        return $qb
-        ->getQuery()
-        ->getResult();
+        return $qb->getQuery()->getResult();
     }
 }

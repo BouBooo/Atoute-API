@@ -22,11 +22,11 @@ class FailedJobRepository
 
     public function findAll(): array
     {
-        return array_map(fn (Envelope $envelope) => new FailedJob($envelope),
+        return array_map(static fn (Envelope $envelope) => new FailedJob($envelope),
             iterator_to_array($this->receiver->all()));
     }
 
-    public function reject(string $id)
+    public function reject(string $id): void
     {
         $this->receiver->reject($this->receiver->find($id));
     }
