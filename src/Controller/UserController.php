@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Offer;
 use App\Entity\Resume;
 use App\Entity\Application;
 use App\Manager\UserManager;
 use App\Service\AuthService;
+use App\Service\CacheService;
 use OpenApi\Annotations as OA;
 use App\Repository\OfferRepository;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,15 +26,21 @@ final class UserController extends BaseController
     private AuthService $authService;
     private SerializerInterface $serializer;
     private UserManager $userManager;
+    private OfferRepository $offerRepository;
+    private CacheService $cacheService;
 
     public function __construct(
         AuthService $authService,
         SerializerInterface $serializer,
-        UserManager $userManager
+        UserManager $userManager,
+        OfferRepository $offerRepository,
+        CacheService $cacheService
     ) {
         $this->authService = $authService;
         $this->serializer = $serializer;
         $this->userManager = $userManager;
+        $this->offerRepository = $offerRepository;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -135,7 +144,7 @@ final class UserController extends BaseController
     /**
      * @Route("/offers/related", name="offers_related", methods={"GET"})
      */
-    public function relatedOffers(OfferRepository $offerRepository): JsonResponse
+    public function relatedOffers(CacheInterface $cache): JsonResponse
     {
         $user = $this->authService->getUser();
 
@@ -144,9 +153,10 @@ final class UserController extends BaseController
         }
 
         $offers = [];
-        foreach($user->getResumes() as $resume) {
-            $relatedOffer = $offerRepository->getRelatedOffer($resume, Offer::FILTERS);
-            $offers[] = json_decode($this->serializer->serialize($relatedOffer, 'json', ['groups' => 'offer_read']));
+        foreach($user->getResumes() as $resume) { 
+            $cacheKey = 'user_'.$user->getId().'_resume_'.$resume->getId().'_related_offers';
+            $relatedOffers = $this->cacheService->loadRelatedOffers($cacheKey, $resume);     
+            $offers[] = json_decode($this->serializer->serialize($relatedOffers->get(), 'json', ['groups' => 'offer_read']));
         }
 
         return $this->respond('related_offers', $offers);
