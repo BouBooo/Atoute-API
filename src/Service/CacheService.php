@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use DateTime;
 use App\Entity\Offer;
 use App\Entity\Resume;
 use App\Repository\OfferRepository;
@@ -19,6 +18,36 @@ class CacheService
         $this->offerRepository = $offerRepository;
     }
 
+    /**
+     * @return mixed
+     */
+    public function get(string $key)
+    {
+        return $this->cache->getItem($key);
+    }
+
+    public function set(string $key, $data, string $expiresAt = '+600 seconds'): void
+    {
+        if (!$this->isCached($key)) {
+            $item = $this->get($key);
+            $date = (new \DateTime())->modify($expiresAt);
+            $item->set($data)->expiresAt($date);
+
+            $this->cache->save($item);
+        }
+    }
+
+    public function delete(string $key): void
+    {
+        $this->cache->delete($key);
+    }
+
+    public function isCached(string $key): bool
+    {
+        $data = $this->get($key);
+        return $data->isHit();
+    }
+
     // TODO: Create global function to load data from cache, not only relatedOffers
     public function loadRelatedOffers(string $key, Resume $resume, string $expiresAt = '+600 seconds')
     {
@@ -28,9 +57,10 @@ class CacheService
             $date->modify($expiresAt);
             $data->set($this->offerRepository->getRelatedOffer($resume, Offer::FILTERS))
                 ->expiresAt($date);
-            
+
             $this->cache->save($data);
-        }    
+        }
+
         return $data;   
     }
 }
