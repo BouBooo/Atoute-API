@@ -26,15 +26,21 @@ class CacheService
         return $this->cache->getItem($key);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getValue(string $key)
+    {
+        return $this->get($key)->get();
+    }
+
     public function set(string $key, $data, string $expiresAt = '+600 seconds'): void
     {
-        if (!$this->isCached($key)) {
-            $item = $this->get($key);
-            $date = (new \DateTime())->modify($expiresAt);
-            $item->set($data)->expiresAt($date);
+        $item = $this->get($key);
+        $date = (new \DateTime())->modify($expiresAt);
+        $item->set($data)->expiresAt($date);
 
-            $this->cache->save($item);
-        }
+        $this->cache->save($item);
     }
 
     public function delete(string $key): void
@@ -46,21 +52,5 @@ class CacheService
     {
         $data = $this->get($key);
         return $data->isHit();
-    }
-
-    // TODO: Create global function to load data from cache, not only relatedOffers
-    public function loadRelatedOffers(string $key, Resume $resume, string $expiresAt = '+600 seconds')
-    {
-        $data = $this->cache->getItem($key);
-        if (!$data->get()) {
-            $date = new DateTime();
-            $date->modify($expiresAt);
-            $data->set($this->offerRepository->getRelatedOffer($resume, Offer::FILTERS))
-                ->expiresAt($date);
-
-            $this->cache->save($data);
-        }
-
-        return $data;   
     }
 }

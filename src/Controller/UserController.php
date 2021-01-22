@@ -155,8 +155,15 @@ final class UserController extends BaseController
         $offers = [];
         foreach($user->getResumes() as $resume) { 
             $cacheKey = 'user_'.$user->getId().'_resume_'.$resume->getId().'_related_offers';
-            $relatedOffers = $this->cacheService->loadRelatedOffers($cacheKey, $resume);     
-            $offers[] = json_decode($this->serializer->serialize($relatedOffers->get(), 'json', ['groups' => 'offer_read']));
+
+            if($this->cacheService->isCached($cacheKey)) {
+                $relatedOffers = $this->cacheService->getValue($cacheKey);
+            } else {
+                $relatedOffers = $this->offerRepository->getRelatedOffer($resume, Offer::FILTERS);
+                $this->cacheService->set($cacheKey, $relatedOffers);
+            }  
+            
+            $offers[] = json_decode($this->serializer->serialize($relatedOffers, 'json', ['groups' => 'offer_read']));
         }
 
         return $this->respond('related_offers', $offers);
