@@ -23,8 +23,8 @@ test:
    - php bin/phpunit
    
 coverage:
- #image: sonarsource/sonar-scanner-cli
- image: jramcast/gitlab-ci-sonarqube
+ image: sonarsource/sonar-scanner-cli
+ #image: jramcast/gitlab-ci-sonarqube
  type: test
  only:
    - master
