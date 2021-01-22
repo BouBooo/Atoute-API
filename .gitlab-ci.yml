@@ -29,7 +29,7 @@ coverage:
  only:
    - master
  script:
-   - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login==$SONAR_LOGIN -Dsonar.password=$SONAR_PASSWORD -Dsonar.projectKey=atoute-api -Dsonar.sources=.
+   - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.password=$SONAR_PASSWORD -Dsonar.projectKey=atoute-api -Dsonar.sources=.
   # - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.projectKey=atoute-api -Dsonar.sources=. -Dsonar.qualitygate.wait=true
   # - sonar-scanner -Dsonar.host.url=http://161.35.6.31:9000 -Dsonar.projectKey=atoute-api -Dsonar.sources=.
  allow_failure: true
