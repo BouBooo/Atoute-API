@@ -69,7 +69,7 @@ class ApiTestCase extends WebTestCase
         self::tearDown(); // To handle multiple asserts in a row
     }
 
-    protected function createUser(string $email, string $password, bool $isVerified = false)
+    protected function createUser(string $email, string $password, bool $isVerified = false): string
     {
         return $this->jsonRequest('POST', '/auth/register', [
             'email' => $email,
@@ -80,7 +80,7 @@ class ApiTestCase extends WebTestCase
         ]);
     }
 
-    protected function createOffer($withErrors = false)
+    protected function createOffer($withErrors = false): array
     {
         return [
             'title' => $withErrors ? '' : "Offer title",
@@ -96,7 +96,7 @@ class ApiTestCase extends WebTestCase
         ];
     }
 
-    protected function createApplication($offerId, $resumeId)
+    protected function createApplication($offerId, $resumeId): array
     {
         return [
             'offerId' => $offerId,
@@ -105,7 +105,7 @@ class ApiTestCase extends WebTestCase
         ];
     }
 
-    protected function generateRandomEmail()
+    protected function generateRandomEmail(): string
     {
         return 'unit_test@' . md5(microtime()) . '.com';
     }

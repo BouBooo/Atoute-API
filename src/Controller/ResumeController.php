@@ -51,7 +51,7 @@ final class ResumeController extends BaseController
     {
         $data = $request->request->all();
 
-        if (!$this->isGranted(ResumeVoter::CREATE)) {
+        if ($this->authService->getUser()->isCompany()) {
             return $this->respondWithError('company_can_create_resume');
         }
 
@@ -81,7 +81,7 @@ final class ResumeController extends BaseController
      */
     public function index(int $id): JsonResponse
     {
-        $resume = $this->getAndVerifyResume($id, false);
+        $resume = $this->getAndVerifyResume($id);
 
         $json = $this->serializer->serialize(
             $resume,
@@ -103,7 +103,7 @@ final class ResumeController extends BaseController
             return $this->respondWithError($resume);
         }
 
-        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
+        if (!$resume->isOwner($this->authService->getUser())) {
             return $this->respondWithError('company_can_create_resume');
         }
 
@@ -155,7 +155,7 @@ final class ResumeController extends BaseController
             return $this->respondWithError($resume);
         }
 
-        if (!$this->isGranted(ResumeVoter::EDIT, $resume)) {
+        if (!$resume->isOwner($this->authService->getUser())) {
             return $this->respondWithError('not_resume_owner');
         }
 
