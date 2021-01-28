@@ -6,6 +6,7 @@ use App\Entity\Offer;
 use App\Form\OfferType;
 use App\Security\Voter\OfferVoter;
 use App\Repository\OfferRepository;
+use App\Service\AuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,15 +26,18 @@ final class OfferController extends BaseController
     private EntityManagerInterface $entityManager;
     private FormFactoryInterface $formFactory;
     private OfferRepository $offerRepository;
+    private AuthService $authService;
 
     public function __construct(
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        AuthService $authService
     ) {
         $this->serializer = $serializer;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
+        $this->authService = $authService;
         $this->offerRepository = $entityManager->getRepository(Offer::class);
     }
 
@@ -44,7 +48,7 @@ final class OfferController extends BaseController
     {
         $data = $this->testJson($request);
 
-        if (!$this->isGranted(OfferVoter::CREATE)) {
+        if ($this->authService->getUser()->isParticular()) {
             return $this->respondWithError('only_companies_can_create_offer');
         }
 
@@ -75,6 +79,41 @@ final class OfferController extends BaseController
 
     /**
      * @Route("", name="all", methods={"GET"})
+     * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La pagination"
+     * )
+     * @OA\Parameter(
+     *     name="l",
+     *     in="query",
+     *     description="Le nombre d'éléments (par défaut à 10)"
+     * )
+     * * @OA\Parameter(
+     *     name="type",
+     *     in="query",
+     *     description="Le type de contrat"
+     * )
+     * @OA\Parameter(
+     *     name="activity",
+     *     in="query",
+     *     description="Le secteur d'activité"
+     * )
+     * @OA\Parameter(
+     *     name="salary",
+     *     in="query",
+     *     description="Le salaire par an"
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     * )
      */
     public function all(Request $request, PaginatorInterface $paginator): JsonResponse
     {
@@ -142,7 +181,7 @@ final class OfferController extends BaseController
             return $this->respondWithError($offer);
         }
 
-        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+        if (!$offer->isOwner($this->authService->getUser())) {
             return $this->respondWithError('only_companies_can_create_offer');
         }
 
@@ -175,7 +214,7 @@ final class OfferController extends BaseController
             return $this->respondWithError($offer);
         }
 
-        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+        if (!$offer->isOwner($this->authService->getUser())) {
             return $this->respondWithError('not_offer_owner');
         }
 
@@ -196,7 +235,7 @@ final class OfferController extends BaseController
             return $this->respondWithError($offer);
         }
 
-        if (!$this->isGranted(OfferVoter::EDIT, $offer)) {
+        if (!$offer->isOwner($this->authService->getUser())) {
             return $this->respondWithError('not_offer_owner');
         }
 

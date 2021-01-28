@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Offer;
 use App\Entity\Resume;
 use App\Entity\Application;
@@ -11,7 +10,6 @@ use App\Service\AuthService;
 use App\Service\CacheService;
 use OpenApi\Annotations as OA;
 use App\Repository\OfferRepository;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -59,6 +57,28 @@ final class UserController extends BaseController
 
     /**
      * @Route("", name="update", methods={"PATCH"})
+     * @OA\Parameter(
+     *     name="body",
+     *     in="path",
+     *     required=true,
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="firstName", type="string"),
+     *        @OA\Property(property="lastName", type="string"),
+     *        @OA\Property(property="companyName", type="string"),
+     *        @OA\Property(property="password", type="string"),
+     *        @OA\Property(property="civility", type="string", enum={"Mr", "Mme"})
+     *     ),
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *     )
+     * )
      */
     public function update(Request $request): JsonResponse
     {
@@ -144,7 +164,7 @@ final class UserController extends BaseController
     /**
      * @Route("/offers/related", name="offers_related", methods={"GET"})
      */
-    public function relatedOffers(CacheInterface $cache): JsonResponse
+    public function relatedOffers(): JsonResponse
     {
         $user = $this->authService->getUser();
 
@@ -153,16 +173,16 @@ final class UserController extends BaseController
         }
 
         $offers = [];
-        foreach($user->getResumes() as $resume) { 
+        foreach ($user->getResumes() as $resume) {
             $cacheKey = 'user_'.$user->getId().'_resume_'.$resume->getId().'_related_offers';
 
-            if($this->cacheService->isCached($cacheKey)) {
+            if ($this->cacheService->isCached($cacheKey)) {
                 $relatedOffers = $this->cacheService->getValue($cacheKey);
             } else {
                 $relatedOffers = $this->offerRepository->getRelatedOffer($resume, Offer::FILTERS);
                 $this->cacheService->set($cacheKey, $relatedOffers);
             }  
-            
+
             $offers[] = json_decode($this->serializer->serialize($relatedOffers, 'json', ['groups' => 'offer_read']));
         }
 

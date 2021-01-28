@@ -71,7 +71,7 @@ class OfferRepository extends ServiceEntityRepository
                 }  
             }
         }
-        
+
         return $qb->orderBy('o.publishedAt', 'DESC')
             ->setParameter('status', Offer::PUBLISHED)
             ->setMaxResults($limit)
@@ -92,12 +92,12 @@ class OfferRepository extends ServiceEntityRepository
 
         if (in_array('type', $filters, true)) {
             $qb->andWhere('o.type = :type')
-            ->setParameter('type', $resume->getContractType());
+                ->setParameter('type', $resume->getContractType());
         }
 
         if (in_array('activity', $filters, true)) {
             $qb->andWhere('o.activity = :activity')
-            ->setParameter('activity', $resume->getActivityArea());
+                ->setParameter('activity', $resume->getActivityArea());
         }
 
         if (in_array('words', $filters, true)) {
@@ -108,7 +108,6 @@ class OfferRepository extends ServiceEntityRepository
                         $sqlCondition[] = "o.description LIKE '%" . $word ."%'";
                     } else {
                         $sqlCondition[] = " o.description LIKE '%" . $word . "%' OR ";
-    
                     }
                 }
 

@@ -38,6 +38,26 @@ final class SecurityController extends BaseController
 
     /**
      * @Route("/register", name="register", methods={"POST"})
+     * @OA\Parameter(
+     *     name="body",
+     *     in="path",
+     *     required=true,
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="email", type="string"),
+     *        @OA\Property(property="password", type="string"),
+     *        @OA\Property(property="role", type="string", enum={"particular", "company"})
+     *     ),
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *     )
+     * )
      */
     public function register(
         Request $request,

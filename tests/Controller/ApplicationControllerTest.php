@@ -24,21 +24,6 @@ class ApplicationControllerTest extends ApiTestCase
         $this->assertJsonEqualsToJson($response, BaseController::ERROR, ApiResponseEnum::USER_ALREADY_APPLIED);
     }
 
-    public function testParticularCanApply(): void
-    {
-        ['offer5' => $offer, 'resume1' => $resume] = $this->loadFixtureFiles([
-            self::DIR_FIXTURES . 'Entities.yaml',
-        ]);
-
-        $application = $this->createApplication($offer->getId(), $resume->getId());
-        $token = $this->getBearerToken($resume->getOwner()->getEmail());
-
-        $response = $this->jsonRequest('POST', '/applications', $application, $token);
-
-        $this->assertResponseStatusCodeSame(JsonResponse::HTTP_OK);
-        $this->assertJsonEqualsToJson($response, BaseController::SUCCESS, ApiResponseEnum::APPLICATION_CREATED);
-    }
-
     public function testParticularCannotApply(): void
     {
         ['particular1' => $particular, 'offer1' => $offer, 'resume1' => $resume] = $this->loadFixtureFiles([
