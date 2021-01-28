@@ -64,7 +64,7 @@ final class ApplicationController extends BaseController
 
         $user = $this->authService->getUser();
 
-        if (!$this->isGranted(ApplicationVoter::CREATE)) {
+        if ($user->isCompany()) {
             return $this->respondWithError('company_cant_applied');
         }
 
@@ -162,7 +162,7 @@ final class ApplicationController extends BaseController
             return $this->respondWithError('application_not_found');
         }
 
-        if (!$this->isGranted(ApplicationVoter::EDIT, $application)) {
+        if (!$application->isOwner($this->authService->getUser()->getId())) {
             return $this->respondWithError('bad_offer_owner');
         }
 
