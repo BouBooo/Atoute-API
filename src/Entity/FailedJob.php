@@ -22,7 +22,7 @@ class FailedJob
         return $this->envelope->all($stamp);
     }
 
-    public function getMessage()
+    public function getMessage(): object
     {
         return $this->envelope->getMessage();
     }

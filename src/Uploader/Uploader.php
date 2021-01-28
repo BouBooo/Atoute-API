@@ -3,7 +3,6 @@
 namespace App\Uploader;
 
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -13,16 +12,12 @@ class Uploader implements UploaderInterface
     private const FILE_EXTENSION = ".pdf";
 
     private string $uploadsAbsoluteDir;
-    private string $uploadsRelativeDir;
     private SluggerInterface $slugger;
-    private RequestStack $requestStack;
 
-    public function __construct(string $uploadsAbsoluteDir, string $uploadsRelativeDir, SluggerInterface $slugger, RequestStack $requestStack)
+    public function __construct(string $uploadsAbsoluteDir, SluggerInterface $slugger)
     {
         $this->uploadsAbsoluteDir = $uploadsAbsoluteDir;
-        $this->uploadsRelativeDir = $uploadsRelativeDir;
         $this->slugger = $slugger;
-        $this->requestStack = $requestStack;
     }
 
     public function upload(UploadedFile $file): string
@@ -42,7 +37,7 @@ class Uploader implements UploaderInterface
 
         $file->move($this->uploadsAbsoluteDir, $filename);
 
-        return $this->getCurrentDomain() . "/" . $this->uploadsRelativeDir . $filename;
+        return $filename;
     }
 
     public function remove(string $path): void
@@ -52,10 +47,5 @@ class Uploader implements UploaderInterface
         if ($filesystem->exists($path)) {
             $filesystem->remove($path);
         }
-    }
-
-    private function getCurrentDomain(): string
-    {
-        return $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost(); // @TODO: try ?
     }
 }

@@ -75,11 +75,46 @@ final class OfferController extends BaseController
 
     /**
      * @Route("", name="all", methods={"GET"})
+     * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La pagination"
+     * )
+     * @OA\Parameter(
+     *     name="l",
+     *     in="query",
+     *     description="Le nombre d'éléments (par défaut à 10)"
+     * )
+     * * @OA\Parameter(
+     *     name="type",
+     *     in="query",
+     *     description="Le type de contrat"
+     * )
+     * @OA\Parameter(
+     *     name="activity",
+     *     in="query",
+     *     description="Le secteur d'activité"
+     * )
+     * @OA\Parameter(
+     *     name="salary",
+     *     in="query",
+     *     description="Le salaire par an"
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     * )
      */
     public function all(Request $request, PaginatorInterface $paginator): JsonResponse
     {
         $limit = (int) $request->query->get('l') !== 0 ? (int) $request->query->get('l') : null;
-        $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : null;
+        $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : 6;
 
         // Filter values
         $type = (string) $request->query->get('type') !== "" ? (string) $request->query->get('type') : null;
@@ -87,8 +122,9 @@ final class OfferController extends BaseController
         $salary = (int) $request->query->get('salary') !== 0 ? (int) $request->query->get('salary') : null;
         $startAt = (string) $request->query->get('start') !== "" ? (string) $request->query->get('start') : null;
         $endAt = (string) $request->query->get('end') !== "" ? (string) $request->query->get('end') : null;
+
         // Filters array
-        $filters = array();
+        $filters = [];
         $filters["type"] = $type;
         $filters["activity"] = $activity;
         $filters["salary"] = $salary;

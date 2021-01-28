@@ -22,6 +22,7 @@
         "ruflin/elastica": "^7.0",
         "sensio/framework-extra-bundle": "^5.1",
         "sentry/sentry-symfony": "^3.5",
+        "spatie/pdf-to-text": "^1.4",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",

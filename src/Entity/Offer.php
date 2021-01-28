@@ -25,6 +25,9 @@ class Offer
     public const PUBLISHED = "published";
     public const CLOSED = "closed";
 
+    public const FILTERS = ['activity', 'type', 'words'];
+    public const KEYWORDS = ['php', 'symfony', 'laravel', 'magento', 'javascript', 'reactjs'];
+
     public static array $offerStatus = [self::DRAFT, self::PUBLISHED, self::CLOSED];
 
     /**

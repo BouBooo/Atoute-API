@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Application;
+use App\Entity\Offer;
 use App\Entity\Resume;
+use App\Entity\Application;
 use App\Manager\UserManager;
 use App\Service\AuthService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\CacheService;
+use OpenApi\Annotations as OA;
+use App\Repository\OfferRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
-use OpenApi\Annotations as OA;
 
 /**
  * @OA\Tag(name="User")
@@ -21,15 +24,21 @@ final class UserController extends BaseController
     private AuthService $authService;
     private SerializerInterface $serializer;
     private UserManager $userManager;
+    private OfferRepository $offerRepository;
+    private CacheService $cacheService;
 
     public function __construct(
         AuthService $authService,
         SerializerInterface $serializer,
-        UserManager $userManager
+        UserManager $userManager,
+        OfferRepository $offerRepository,
+        CacheService $cacheService
     ) {
         $this->authService = $authService;
         $this->serializer = $serializer;
         $this->userManager = $userManager;
+        $this->offerRepository = $offerRepository;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -48,6 +57,28 @@ final class UserController extends BaseController
 
     /**
      * @Route("", name="update", methods={"PATCH"})
+     * @OA\Parameter(
+     *     name="body",
+     *     in="path",
+     *     required=true,
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="firstName", type="string"),
+     *        @OA\Property(property="lastName", type="string"),
+     *        @OA\Property(property="companyName", type="string"),
+     *        @OA\Property(property="password", type="string"),
+     *        @OA\Property(property="civility", type="string", enum={"Mr", "Mme"})
+     *     ),
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *     )
+     * )
      */
     public function update(Request $request): JsonResponse
     {
@@ -128,5 +159,33 @@ final class UserController extends BaseController
         }
 
         return $this->respond('offers_infos', $offers);
+    }
+
+    /**
+     * @Route("/offers/related", name="offers_related", methods={"GET"})
+     */
+    public function relatedOffers(): JsonResponse
+    {
+        $user = $this->authService->getUser();
+
+        if ($user->isCompany()) {
+            return $this->respondWithError('company_cant_have_related_offers');
+        }
+
+        $offers = [];
+        foreach ($user->getResumes() as $resume) {
+            $cacheKey = 'user_'.$user->getId().'_resume_'.$resume->getId().'_related_offers';
+
+            if ($this->cacheService->isCached($cacheKey)) {
+                $relatedOffers = $this->cacheService->getValue($cacheKey);
+            } else {
+                $relatedOffers = $this->offerRepository->getRelatedOffer($resume, Offer::FILTERS);
+                $this->cacheService->set($cacheKey, $relatedOffers);
+            }  
+
+            $offers[] = json_decode($this->serializer->serialize($relatedOffers, 'json', ['groups' => 'offer_read']));
+        }
+
+        return $this->respond('related_offers', $offers);
     }
 }
