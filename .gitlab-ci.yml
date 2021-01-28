@@ -17,7 +17,6 @@ test:
    - composer require symfony/messenger
    - composer install
  script:
-   - php -d memory_limit=512M vendor/bin/phpstan analyse --ansi -c phpstan.neon -l 5 src
    - cp .env.test.dist .env.test
    - docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
    - php bin/phpunit
