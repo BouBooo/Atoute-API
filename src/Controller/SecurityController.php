@@ -77,21 +77,13 @@ final class SecurityController extends BaseController
     }
 
     /**
-     * @Route("/register/check", name="check_register", methods={"PATCH"})
+     * @Route("/register/check/{id}/{token}", name="check_register")
      */
-    public function check(Request $request): JsonResponse
+    public function check(int $id, string $token): JsonResponse
     {
-        $data = $this->testJson($request);
-
-        if (!array_key_exists('token', $data) || !array_key_exists('id', $data)) {
-            return $this->respondWithError('credentials_not_provided');
-        }
-
-        if (!$userExists = $this->userRepository->find($data['id'])) {
+        if (!$userExists = $this->userRepository->find($id)) {
             return $this->respondWithError('user_not_found');
         }
-
-        $token = $data['token'];
 
         if (empty($token) || $token !== $userExists->getConfirmationToken()) {
             return $this->respondWithError('invalid_token');

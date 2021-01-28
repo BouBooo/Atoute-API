@@ -79,7 +79,7 @@ final class OfferController extends BaseController
     public function all(Request $request, PaginatorInterface $paginator): JsonResponse
     {
         $limit = (int) $request->query->get('l') !== 0 ? (int) $request->query->get('l') : null;
-        $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : null;
+        $offerPerPage = (int) $request->query->get('n') !== 0 ? (int) $request->query->get('n') : 6;
 
         // Filter values
         $type = (string) $request->query->get('type') !== "" ? (string) $request->query->get('type') : null;
