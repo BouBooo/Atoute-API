@@ -18,6 +18,26 @@ final class SearchController extends BaseController
 {
     /**
      * @Route("", name="index", methods={"GET"})
+     * @OA\Parameter(
+     *     name="q",
+     *     in="query",
+     *     description="Contenu de la recherche, un titre, une description..."
+     * )
+     * @OA\Parameter(
+     *     name="l",
+     *     in="query",
+     *     description="Le nombre d'éléments (par défaut à 10)"
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="status", type="string"),
+     *        @OA\Property(property="message", type="string"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     * )
      */
     public function search(Request $request, Client $client, OfferQuery $offerQuery): JsonResponse
     {
