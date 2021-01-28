@@ -104,11 +104,7 @@ class OfferRepository extends ServiceEntityRepository
             $words = $this->resumeManager->extractKeywords($resume);
             if (!empty($words)) {
                 foreach ($words as $key => $word) {
-                    if ($key === count($words) - 1) {
-                        $sqlCondition[] = "o.description LIKE '%" . $word ."%'";
-                    } else {
-                        $sqlCondition[] = " o.description LIKE '%" . $word . "%' OR ";
-                    }
+                    $sqlCondition[] = "o.description LIKE '%" . $word ."%'" . ($key !== count($words) - 1) ? " OR " : "";
                 }
 
                 $qb->andWhere(implode($sqlCondition));
