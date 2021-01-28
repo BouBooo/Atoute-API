@@ -44,6 +44,20 @@ Some tasks have configuration here :
 - PHPStan : [phpstan.neon](./phpstan.neon)
 - PHP-CS-Fixer : [php_cs](./.php_cs)
 
+
+## Consuming Messages 
+
+Inside php container
+```bash
+# Running the worker
+# use -vv to see details about what's happening
+php bin/console messenger:consume async
+```
+
+Dashboard is available to retry or reject failed tasks :
+
+http://localhost:8080/admin/jobs/
+
 ## Unit tests
 
 Inside php container

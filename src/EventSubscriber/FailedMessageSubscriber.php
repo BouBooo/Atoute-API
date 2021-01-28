@@ -29,6 +29,7 @@ class FailedMessageSubscriber implements EventSubscriberInterface
     {
         $failureEmail = $this->mailer->buildEmail(self::CONTACT_EMAIL, self::TWIG_TEMPLATE, [
             'message' => get_class($event->getEnvelope()->getMessage()),
+            'error' => $event->getThrowable()->getMessage(),
             'trace' => $event->getThrowable()->getTraceAsString()
         ]);
 

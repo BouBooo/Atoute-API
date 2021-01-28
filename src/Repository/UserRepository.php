@@ -20,7 +20,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);

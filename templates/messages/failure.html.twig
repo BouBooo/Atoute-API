@@ -5,12 +5,14 @@
 {% block main_content %}
     <p>Une erreur est survenue lors du traitement d'une tâche</p>
     <p>Tache concernée : <b>{{ message }}</b></p>
+    <p>Erreur : <b>{{ error }}</b></p>
 {% endblock %}
 
 {% block btn %}
-    <pre>
-        <code>
+    <div class="jumbotron text-center">
+        <h3 class="my-3">Stack trace</h3>
+        <small>
             {{ trace }}
-        </code>
-    </pre>
+        </small>
+    </div>
 {% endblock %}
